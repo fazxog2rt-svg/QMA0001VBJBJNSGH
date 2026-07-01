@@ -17,3 +17,5 @@ export * from "./CommunityEvent";
 export * from "./ActivityLog";
 export * from "./VerificationAttempt";
 export * from "./RoleBackup";
+export * from "./AiChatLog";
+export * from "./Faq";

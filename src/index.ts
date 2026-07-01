@@ -3,6 +3,7 @@ import { env } from "./config/env";
 import { connectDatabase, disconnectDatabase } from "./database/connection";
 import { loadCommands } from "./handlers/commandHandler";
 import { loadComponents } from "./handlers/componentHandler";
+import { loadContextMenuCommands } from "./handlers/contextMenuHandler";
 import { loadEvents } from "./handlers/eventHandler";
 import { connectRedis, disconnectRedis } from "./services/redis.service";
 import { logger } from "./services/logger.service";
@@ -18,6 +19,7 @@ async function bootstrap(): Promise<void> {
 
   await loadEvents(client);
   await loadCommands(client);
+  await loadContextMenuCommands(client);
   await loadComponents(client);
 
   await client.login(env.DISCORD_TOKEN);

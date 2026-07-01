@@ -2,16 +2,24 @@ import path from "node:path";
 import { REST, Routes } from "discord.js";
 import { env } from "../config/env";
 import { logger } from "../services/logger.service";
-import type { SlashCommand } from "../types/command";
+import type { ContextMenuCommand, SlashCommand } from "../types/command";
 import { walkTsFiles } from "../utils/fileWalker";
 
 async function main(): Promise<void> {
   const commandsDir = path.join(__dirname, "..", "commands");
-  const files = walkTsFiles(commandsDir);
+  const contextMenusDir = path.join(__dirname, "..", "context-menus");
 
   const commandBodies = [];
-  for (const file of files) {
+
+  for (const file of walkTsFiles(commandsDir)) {
     const imported = (await import(file)) as { default?: SlashCommand };
+    if (imported.default?.data) {
+      commandBodies.push(imported.default.data.toJSON());
+    }
+  }
+
+  for (const file of walkTsFiles(contextMenusDir)) {
+    const imported = (await import(file)) as { default?: ContextMenuCommand };
     if (imported.default?.data) {
       commandBodies.push(imported.default.data.toJSON());
     }
@@ -26,7 +34,7 @@ async function main(): Promise<void> {
   await rest.put(route, { body: commandBodies });
 
   logger.info(
-    `Berhasil deploy ${commandBodies.length} slash command ke ${
+    `Berhasil deploy ${commandBodies.length} command (slash + context menu) ke ${
       env.DISCORD_DEV_GUILD_ID ? `guild ${env.DISCORD_DEV_GUILD_ID}` : "global"
     }.`,
   );

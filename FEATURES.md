@@ -144,12 +144,28 @@ Moderation → Security → AI → Economy → Events → Testing → Optimasi �
 | Restore Role (`/role-backup pulihkan`) | implemented | Membuat ulang role yang hilang dari backup (confirm dialog, tidak menimpa role yang masih ada) |
 | `/security-config` | implemented | Satu command admin untuk semua toggle automod/raid/nuke/verifikasi |
 
+## AI (OpenRouter) — Stage 15 (selesai)
+
+| Feature | Status | Catatan |
+|---|---|---|
+| Fondasi: 1 client OpenRouter (kompatibel OpenAI SDK), 1 model dikonfigurasi via `.env` | implemented | `openRouterClient.ts` — gagal secara graceful (pesan error jelas, bukan crash) jika `OPENROUTER_API_KEY` belum diatur; diverifikasi lewat smoke test |
+| `/ai-chat` | implemented | |
+| `/ai-translate` | implemented | |
+| `/ai-summarize [jumlah]` | implemented | Meringkas N pesan terakhir channel |
+| `/ai-code tanya/jelaskan` (Coding Assistant) | implemented | Juga tersedia sebagai context menu message **"Jelaskan Kode Ini"** |
+| `/ai-moderate` | implemented | **Hanya rekomendasi untuk moderator** — AI tidak pernah mengambil tindakan (ban/mute) sendiri, mengurangi risiko false-positive dari LLM |
+| `/ai-faq` + `/faq tambah/hapus/list` | implemented | Jawaban AI menggunakan FAQ server sebagai konteks bila relevan |
+| `/ai-prompt` (Prompt Generator) | implemented | |
+| `/ai-grammar` (Grammar Checker) | implemented | |
+| `/ai-toggle` (admin) | implemented | Fitur AI mati secara default per-guild; admin harus mengaktifkan eksplisit |
+| Pencatatan penggunaan | implemented | `Member.aiUsageCount` (dipakai achievement "AI Explorer") + `AiChatLog` per pemakaian |
+| **Perbaikan fondasi**: Context Menu Command loader | implemented | Ternyata sejak Stage 4-7 belum ada loader untuk context menu command meski `client.contextMenuCommands` & `interactionCreate.ts` sudah menanganinya — ditambahkan `src/handlers/contextMenuHandler.ts` + folder `src/context-menus/`, dan `deployCommands.ts` diperbarui untuk mendaftarkan keduanya sekaligus |
+
 ## Belum dikerjakan (menunggu checkpoint tahap berikutnya)
 
 Setiap modul berikut butuh command + business logic + (untuk beberapa) rendering
 canvas/PDF. Skema database untuk semua ini sudah ada di `src/database/models/`.
 - **Utilitas tambahan** — QR generator, password generator, UUID generator, embed builder, calculator, JSON formatter
-- **AI (OpenRouter)** — chat, translate, summarize, coding assistant, AI moderator, FAQ, prompt generator, grammar checker
 - **Hiburan** — meme, trivia, truth or dare, would-you-rather, coinflip, dice, 8ball, pet, fishing, daily quest
 - **Ekonomi** — wallet/bank, shop, inventory, transfer, weekly reward, leaderboard (`/daily` sudah ada di stage Komunitas, `walletBalance` sudah dipakai olehnya)
 - **Event komunitas** — RSVP, countdown, attendance, lucky draw, giveaway
