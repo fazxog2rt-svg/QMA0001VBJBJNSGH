@@ -126,12 +126,28 @@ Moderation → Security → AI → Economy → Events → Testing → Optimasi �
 | Perlindungan target | implemented | Tidak bisa moderasi diri sendiri, owner server, atau bot itu sendiri (`isModerationTargetSafe`) |
 | Nomor kasus atomik | implemented | Counter per-guild, konsisten dengan pola KTP/tiket |
 
+## Keamanan — Stage 14 (selesai)
+
+| Feature | Status | Catatan |
+|---|---|---|
+| Anti Spam | implemented | Sliding window per-user (>5 pesan/7 detik), pesan dihapus + case warn otomatis |
+| Anti Scam Link | implemented | Kombinasi keyword scam umum + TLD mencurigakan (`.xyz`, `.top`, dll) — diverifikasi tidak false-positive pada link normal (GitHub, dll) |
+| Anti Invite | implemented | Regex `discord.gg/` dan `discord.com/invite/` |
+| Anti Mention Spam | implemented | Ambang batas mention unik per pesan, dapat dikonfigurasi |
+| Anti Raid | implemented | Deteksi lonjakan join (sliding window), menaikkan verification level server ke High selama 10 menit lalu otomatis kembali normal |
+| Anti Nuke | implemented | Melacak aksi destruktif (hapus channel/role) via audit log per-eksekutor; jika melewati ambang batas, semua role eksekutor (bukan owner) dicabut sementara + alert admin — bukan ban otomatis, supaya aman dari false-positive |
+| Verification / Captcha | implemented | Captcha matematika sederhana via DM + 3 tombol pilihan saat member join (jika diaktifkan) |
+| Alt Detection | implemented | Menandai akun yang lebih baru dari ambang batas umur akun (jam), tercatat di `VerificationAttempt` |
+| VPN Detection | **tidak dapat diimplementasikan** | Discord API tidak pernah memberi bot akses ke alamat IP user — deteksi VPN/IP sungguhan hanya mungkin lewat OAuth2 di web server yang menangkap IP, yang bertentangan dengan instruksi "tanpa website". Ini keterbatasan teknis nyata, bukan disederhanakan begitu saja. |
+| Audit Log (`/auditlog [tipe]`) | implemented | Viewer paginated untuk `ActivityLog`, bisa difilter per tipe |
+| Backup Role (`/role-backup buat/list`) | implemented | Snapshot nama/warna/permission/posisi semua role |
+| Restore Role (`/role-backup pulihkan`) | implemented | Membuat ulang role yang hilang dari backup (confirm dialog, tidak menimpa role yang masih ada) |
+| `/security-config` | implemented | Satu command admin untuk semua toggle automod/raid/nuke/verifikasi |
+
 ## Belum dikerjakan (menunggu checkpoint tahap berikutnya)
 
 Setiap modul berikut butuh command + business logic + (untuk beberapa) rendering
 canvas/PDF. Skema database untuk semua ini sudah ada di `src/database/models/`.
-
-- **Keamanan** — anti-raid, anti-nuke, anti-spam, anti-scam, captcha, alt/VPN detection, audit log, backup/restore role
 - **Utilitas tambahan** — QR generator, password generator, UUID generator, embed builder, calculator, JSON formatter
 - **AI (OpenRouter)** — chat, translate, summarize, coding assistant, AI moderator, FAQ, prompt generator, grammar checker
 - **Hiburan** — meme, trivia, truth or dare, would-you-rather, coinflip, dice, 8ball, pet, fishing, daily quest

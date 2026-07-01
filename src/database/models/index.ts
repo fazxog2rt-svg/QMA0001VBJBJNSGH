@@ -16,3 +16,4 @@ export * from "./ShopItem";
 export * from "./CommunityEvent";
 export * from "./ActivityLog";
 export * from "./VerificationAttempt";
+export * from "./RoleBackup";

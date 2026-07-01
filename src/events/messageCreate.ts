@@ -1,6 +1,7 @@
 import type { Message } from "discord.js";
 import { awardMessageXp, handleLevelUpSideEffects } from "../services/leveling/levelingService";
 import { clearAfkIfNeeded, getAfkMentionInfo } from "../services/community/afkService";
+import { runAutoMod } from "../services/security/autoModService";
 import { logger } from "../services/logger.service";
 import type { BotEvent } from "../types/event";
 
@@ -33,6 +34,9 @@ const event: BotEvent<"messageCreate"> = {
     if (message.author.bot || !message.inGuild()) return;
 
     try {
+      const wasRemoved = await runAutoMod(message);
+      if (wasRemoved) return;
+
       await handleAfk(message);
 
       const result = await awardMessageXp(message.guildId, message.author.id);

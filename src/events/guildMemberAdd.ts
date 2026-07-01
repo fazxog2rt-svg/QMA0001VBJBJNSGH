@@ -1,6 +1,8 @@
 import { AttachmentBuilder, type GuildMember } from "discord.js";
 import { GuildConfig } from "../database/models/GuildConfig";
 import { renderWelcomeCard } from "../services/community/welcomeCardRenderer";
+import { checkAntiRaid } from "../services/security/antiRaidService";
+import { runJoinSecurityChecks } from "../services/security/verificationService";
 import { logger } from "../services/logger.service";
 import type { BotEvent } from "../types/event";
 
@@ -14,6 +16,17 @@ function applyTemplate(template: string, member: GuildMember): string {
 const event: BotEvent<"guildMemberAdd"> = {
   name: "guildMemberAdd",
   execute: async (_client, member: GuildMember) => {
+    await checkAntiRaid(member).catch((error) => {
+      logger.error("Gagal memproses anti-raid", {
+        error: error instanceof Error ? error.message : error,
+      });
+    });
+    await runJoinSecurityChecks(member).catch((error) => {
+      logger.error("Gagal memproses pemeriksaan keamanan join", {
+        error: error instanceof Error ? error.message : error,
+      });
+    });
+
     try {
       const guildConfig = await GuildConfig.findOne({ guildId: member.guild.id });
 

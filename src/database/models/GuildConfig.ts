@@ -58,11 +58,16 @@ const guildConfigSchema = new Schema(
 
     security: {
       antiRaid: { type: Boolean, default: true },
+      raidJoinThreshold: { type: Number, default: 10 },
+      raidJoinWindowSeconds: { type: Number, default: 10 },
       antiNuke: { type: Boolean, default: true },
+      antiNukeMaxActions: { type: Number, default: 3 },
+      antiNukeWindowSeconds: { type: Number, default: 60 },
       captchaVerification: { type: Boolean, default: false },
       altDetectionMinAccountAgeHours: { type: Number, default: 24 },
       verifiedRoleId: { type: String },
       unverifiedRoleId: { type: String },
+      logChannelId: { type: String },
     },
 
     tickets: {
