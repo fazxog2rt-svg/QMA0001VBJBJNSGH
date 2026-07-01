@@ -3,6 +3,7 @@ import { Member, type MemberDocument } from "../../database/models/Member";
 import { GuildConfig } from "../../database/models/GuildConfig";
 import { ShopItem } from "../../database/models/ShopItem";
 import { getOrCreateMember } from "../profile/profileService";
+import { cached } from "../cache.service";
 
 const WEEKLY_COOLDOWN_MS = 7 * 24 * 60 * 60 * 1000;
 
@@ -162,17 +163,20 @@ export async function getEconomyLeaderboard(
   guildId: string,
   limit: number,
 ): Promise<EconomyLeaderboardEntry[]> {
-  const members = await Member.aggregate<{ userId: string; total: number }>([
-    { $match: { guildId } },
-    { $addFields: { total: { $add: ["$walletBalance", "$bankBalance"] } } },
-    { $sort: { total: -1 } },
-    { $limit: limit },
-    { $project: { userId: 1, total: 1, _id: 0 } },
-  ]);
+  // Aggregation over wallet+bank is expensive; cache for 60s.
+  return cached(`lb:economy:${guildId}:${limit}`, 60, async () => {
+    const members = await Member.aggregate<{ userId: string; total: number }>([
+      { $match: { guildId } },
+      { $addFields: { total: { $add: ["$walletBalance", "$bankBalance"] } } },
+      { $sort: { total: -1 } },
+      { $limit: limit },
+      { $project: { userId: 1, total: 1, _id: 0 } },
+    ]);
 
-  return members.map((entry, index) => ({
-    userId: entry.userId,
-    total: entry.total,
-    rank: index + 1,
-  }));
+    return members.map((entry, index) => ({
+      userId: entry.userId,
+      total: entry.total,
+      rank: index + 1,
+    }));
+  });
 }

@@ -1,7 +1,12 @@
 import OpenAI from "openai";
+import Bottleneck from "bottleneck";
 import { env } from "../../config/env";
 
 let client: OpenAI | null = null;
+
+// Throttle outbound AI calls: max 1 concurrent, min 1s between requests, so a
+// burst of /ai-chat usage can't blow through OpenRouter rate limits or budget.
+const limiter = new Bottleneck({ maxConcurrent: 1, minTime: 1000 });
 
 export function isAiConfigured(): boolean {
   return Boolean(env.OPENROUTER_API_KEY);
@@ -39,14 +44,16 @@ export async function requestAiCompletion(
   }
 
   try {
-    const response = await getClient().chat.completions.create({
-      model: env.OPENROUTER_MODEL,
-      messages: [
-        { role: "system", content: systemPrompt },
-        { role: "user", content: userPrompt },
-      ],
-      max_tokens: 1000,
-    });
+    const response = await limiter.schedule(() =>
+      getClient().chat.completions.create({
+        model: env.OPENROUTER_MODEL,
+        messages: [
+          { role: "system", content: systemPrompt },
+          { role: "user", content: userPrompt },
+        ],
+        max_tokens: 1000,
+      }),
+    );
 
     const content = response.choices[0]?.message?.content;
     if (!content) {

@@ -106,6 +106,43 @@ pm2 start ecosystem.config.js
 | `npm run typecheck` | `tsc --noEmit` |
 | `npm test` / `test:watch` | Vitest |
 
+## Daftar Command (83 slash + 1 context menu)
+
+Semua konfigurasi dilakukan lewat command Discord — tidak ada web dashboard.
+
+| Kategori | Command |
+|---|---|
+| 🪪 Identitas Digital (KTP) | `/ktp buat·lihat·riwayat·verifikasi·tolak` |
+| 👤 Profil Member | `/profile lihat·edit·achievements`, `/badge beri·cabut` |
+| 📈 Leveling | `/rank`, `/leaderboard`, `/level-role`, `/prestige`, `/xp beri` |
+| 🎉 Komunitas | `/daily`, `/reputasi`, `/poll`, `/suggest`, `/starboard`, `/birthday`, `/remind`, `/afk`, `/confess`, `/anon`, `/tempvoice`, `/welcome`, `/autorole`, `/reactionrole` |
+| 🎫 Tiket | `/ticket-panel`, `/ticket-config` (+ tombol claim/close/reopen/delete & rating) |
+| 🔨 Moderasi | `/warn`, `/mute`·`/unmute`, `/timeout`·`/untimeout`, `/kick`, `/ban`·`/unban`, `/tempban`, `/softban`, `/purge`, `/lockdown`·`/unlock`, `/slowmode`, `/nickname-filter`, `/case` |
+| 🛡️ Keamanan | `/security-config`, `/auditlog`, `/role-backup` (+ automod, anti-raid, anti-nuke, captcha otomatis) |
+| 🧰 Utilitas | `/qr`, `/password`, `/uuid`, `/timestamp`, `/calc`, `/json-format`, `/color`, `/embed-builder`, `/announce`, `/help`, `/ping` |
+| 🤖 AI (OpenRouter) | `/ai-chat`, `/ai-translate`, `/ai-summarize`, `/ai-code`, `/ai-grammar`, `/ai-prompt`, `/ai-moderate`, `/ai-faq`, `/faq`, `/ai-toggle`, context menu "Jelaskan Kode Ini" |
+| 🎲 Hiburan | `/coinflip`, `/dice`, `/8ball`, `/tod`, `/meme`, `/trivia`, `/daily-quest` |
+| 💰 Ekonomi | `/balance`, `/bank`, `/transfer`, `/weekly`, `/work`, `/shop`, `/buy`, `/inventory`, `/rich`, `/shop-admin` |
+| 📅 Event | `/event buat·selesai·list`, `/giveaway mulai·akhiri` |
+
+## Performa & Optimasi
+
+- **Redis cache** (`src/services/cache.service.ts`): leaderboard XP & ekonomi di-cache 60 detik
+  (read-through, fallback aman ke DB jika Redis mati).
+- **Rate limiter** (`bottleneck`): panggilan AI OpenRouter dibatasi 1 request/detik untuk
+  melindungi kuota & rate limit.
+- **Cooldown** per-command per-user dicek terpusat di `interactionCreate`.
+- **Cron scheduler** (`node-cron`): reminder, tempban expiry, giveaway auto-end, event
+  reminder (per menit) + pengumuman ulang tahun (08:00 WIB).
+- **Atomic counters** untuk penomoran KTP/tiket/kasus (aman dari race condition), dan
+  transfer ekonomi memakai update bersyarat (aman dari double-spend).
+
+## Testing
+
+`npm test` menjalankan 33 unit test (Vitest) untuk logika murni: kurva XP/leveling,
+parser durasi, validasi KTP, detektor auto-moderasi, dan kalkulator aman (termasuk test
+yang memverifikasi input berbahaya seperti `process.exit(1)` **ditolak**, bukan dieksekusi).
+
 ## Status fitur
 
 Lihat [`FEATURES.md`](FEATURES.md) untuk status jujur setiap fitur (implemented / partial /

@@ -214,10 +214,25 @@ Moderation → Security → AI → Economy → Events → Testing → Optimasi �
 | `/event list` | implemented | Event mendatang, paginated-ready |
 | Giveaway Integration (`/giveaway mulai/akhiri`) | implemented | Tombol ikut (toggle join/leave), auto-end via cron per-menit, undian pemenang acak tanpa duplikat |
 
-## Testing, Optimasi & Dokumentasi — Stage 18-20
+## Testing, Optimasi & Dokumentasi — Stage 18-20 (selesai)
 
-Lihat bagian bawah file ini setelah stage tersebut selesai.
+| Item | Status | Catatan |
+|---|---|---|
+| Unit test logika murni (Vitest) | implemented | 33 test di 6 file: kurva XP/leveling + `totalXpForLevel`, parser durasi, validasi KTP (NIK/tanggal/kode pos), detektor auto-moderasi, formatter durasi, dan kalkulator aman |
+| Test keamanan kalkulator | implemented | Memverifikasi input berbahaya (`process.exit(1)`, `alert('x')`) **dilempar sebagai error**, bukan dieksekusi |
+| Redis cache read-through | implemented | `src/services/cache.service.ts` — leaderboard XP & ekonomi di-cache 60 detik; fallback aman ke DB jika Redis mati (tidak pernah throw) |
+| Rate limiter AI | implemented | `bottleneck` di `openRouterClient.ts` — maks 1 request/detik, melindungi kuota & rate limit OpenRouter |
+| Atomic operations | implemented | Counter penomoran (KTP/tiket/kasus) + transfer ekonomi dengan update bersyarat (anti double-spend) |
+| Error handling terpusat | implemented | `interactionCreate.ts` menangkap semua error interaksi, membalas ephemeral, dan mencatat via winston |
+| Environment validation | implemented | `zod` di `src/config/env.ts` — bot menolak start jika variabel wajib hilang |
+| Dokumentasi | implemented | `README.md` (daftar 83 command per kategori, performa, testing, deploy) + `FEATURES.md` (status jujur per stage) |
 
-## Belum dikerjakan
+## Ringkasan akhir
 
-- **Testing menyeluruh** per modul, optimasi (Redis cache di leaderboard/cooldown), dokumentasi command
+- **83 slash command + 1 context menu**, 13 kategori
+- **17 model MongoDB**, semua fitur menulis data nyata
+- **12 event listener**, **4 cron job**, rendering canvas (KTP/profil/rank/welcome) + PDF (KTP/transkrip)
+- **33 unit test** hijau, lint & typecheck bersih
+- Semua tahap 1-20 dari spesifikasi selesai; item yang tidak mungkin secara teknis
+  (VPN detection) atau di luar cakupan inti (pet/fishing gameplay) didokumentasikan
+  jujur, bukan dipalsukan.

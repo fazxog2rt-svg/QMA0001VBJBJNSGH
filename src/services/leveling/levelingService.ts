@@ -10,6 +10,7 @@ import {
   levelFromXp,
 } from "../../config/constants";
 import { buildEmbed } from "../../utils/embed";
+import { cached } from "../cache.service";
 import { logger } from "../../services/logger.service";
 
 export interface XpAwardResult {
@@ -178,13 +179,16 @@ export async function getLeaderboard(
   limit: number,
   skip: number,
 ): Promise<LeaderboardEntry[]> {
-  const members = await Member.find({ guildId }).sort({ xp: -1 }).skip(skip).limit(limit);
-  return members.map((member, index) => ({
-    userId: member.userId,
-    xp: member.xp,
-    level: member.level,
-    rank: skip + index + 1,
-  }));
+  // Leaderboards are read-heavy and expensive to sort; cache for 60s per page.
+  return cached(`lb:xp:${guildId}:${skip}:${limit}`, 60, async () => {
+    const members = await Member.find({ guildId }).sort({ xp: -1 }).skip(skip).limit(limit);
+    return members.map((member, index) => ({
+      userId: member.userId,
+      xp: member.xp,
+      level: member.level,
+      rank: skip + index + 1,
+    }));
+  });
 }
 
 export async function getRank(guildId: string, userId: string): Promise<number> {
