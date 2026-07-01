@@ -1,0 +1,36 @@
+{
+  "name": "nexusbot",
+  "version": "1.0.0",
+  "private": true,
+  "description": "NexusBot — enterprise-grade Discord bot platform with dashboard, REST API, realtime WebSocket, and admin/analytics panels.",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "turbo run dev --parallel",
+    "build": "turbo run build",
+    "lint": "turbo run lint",
+    "test": "turbo run test",
+    "typecheck": "turbo run typecheck",
+    "clean": "turbo run clean && rimraf node_modules",
+    "db:generate": "npm run generate --workspace=@nexusbot/database",
+    "db:migrate": "npm run migrate:dev --workspace=@nexusbot/database",
+    "db:seed": "npm run seed --workspace=@nexusbot/database",
+    "db:studio": "npm run studio --workspace=@nexusbot/database",
+    "prepare": "husky install || true"
+  },
+  "devDependencies": {
+    "turbo": "^2.1.3",
+    "typescript": "^5.6.3",
+    "eslint": "^8.57.1",
+    "prettier": "^3.3.3",
+    "rimraf": "^6.0.1",
+    "husky": "^9.1.6",
+    "lint-staged": "^15.2.10"
+  },
+  "engines": {
+    "node": ">=20.0.0"
+  },
+  "packageManager": "npm@10.8.2"
+}

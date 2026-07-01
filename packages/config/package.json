@@ -1,0 +1,7 @@
+{
+  "name": "@nexusbot/config",
+  "version": "1.0.0",
+  "private": true,
+  "main": "index.js",
+  "files": ["base.js", "next.js", "node.js"]
+}

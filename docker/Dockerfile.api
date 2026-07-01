@@ -1,0 +1,29 @@
+FROM node:20-alpine AS base
+WORKDIR /app
+RUN apk add --no-cache libc6-compat openssl
+
+FROM base AS deps
+COPY package.json package-lock.json* turbo.json tsconfig.base.json ./
+COPY packages/database/package.json packages/database/package.json
+COPY packages/shared/package.json packages/shared/package.json
+COPY packages/config/package.json packages/config/package.json
+COPY apps/api/package.json apps/api/package.json
+RUN npm install --workspaces --include-workspace-root --no-audit --no-fund
+
+FROM deps AS build
+COPY . .
+RUN npm run generate --workspace=@nexusbot/database
+RUN npm run build --workspace=@nexusbot/shared
+RUN npm run build --workspace=@nexusbot/database
+RUN npm run build --workspace=@nexusbot/api
+
+FROM base AS runner
+ENV NODE_ENV=production
+COPY --from=build /app/node_modules ./node_modules
+COPY --from=build /app/package.json ./package.json
+COPY --from=build /app/packages ./packages
+COPY --from=build /app/apps/api/dist ./apps/api/dist
+COPY --from=build /app/apps/api/package.json ./apps/api/package.json
+
+EXPOSE 4000
+CMD ["node", "apps/api/dist/index.js"]
