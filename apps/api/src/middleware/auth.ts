@@ -22,9 +22,17 @@ declare global {
  * the same approach used by many SPA APIs (Rails/Django/Google use header
  * checks similarly) and pairs with `SameSite=Lax` cookies set in auth routes.
  */
+// Server-to-server webhook routes can never send a custom browser header —
+// they authenticate via provider signature verification instead (see the
+// premium payment-webhook stub), so they're exempt from the CSRF guard.
+const CSRF_EXEMPT_PATH_PREFIXES = ["/api/v1/premium/webhook/"];
+
 export function csrfHeaderGuard(req: Request, res: Response, next: NextFunction) {
   const safeMethods = new Set(["GET", "HEAD", "OPTIONS"]);
   if (safeMethods.has(req.method)) return next();
+  if (CSRF_EXEMPT_PATH_PREFIXES.some((prefix) => req.originalUrl.startsWith(prefix))) {
+    return next();
+  }
   if (req.headers["x-requested-with"]) return next();
   // Allow Bearer/API-key authenticated requests (non-browser clients) through —
   // the header guard only protects the cookie-based session flow.

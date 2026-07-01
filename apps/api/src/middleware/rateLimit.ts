@@ -1,5 +1,7 @@
-import rateLimit, { type Request, type Response } from "express-rate-limit";
+import rateLimit from "express-rate-limit";
+import type { Request, Response } from "express";
 import { RedisStore } from "rate-limit-redis";
+import type { RedisReply } from "rate-limit-redis";
 import type { ApiErrorBody } from "@nexusbot/shared";
 import { DEFAULT_RATE_LIMIT_MAX, DEFAULT_RATE_LIMIT_WINDOW_MS } from "@nexusbot/shared";
 import { redisClient } from "../lib/redis";
@@ -14,7 +16,8 @@ function jsonRateLimitHandler(req: Request, res: Response) {
 function redisStore(prefix: string) {
   return new RedisStore({
     // rate-limit-redis v4 expects a `sendCommand` that proxies to ioredis.
-    sendCommand: (...args: string[]) => redisClient.call(...(args as [string, ...string[]])) as Promise<unknown>,
+    sendCommand: (...args: string[]) =>
+      redisClient.call(...(args as [string, ...string[]])) as Promise<RedisReply>,
     prefix,
   });
 }

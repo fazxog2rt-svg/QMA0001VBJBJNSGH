@@ -580,7 +580,7 @@ model IdentityCard {
   uniqueCode     String           @unique @default(cuid())
   guildId        String
   guild          Guild            @relation(fields: [guildId], references: [id], onDelete: Cascade)
-  userId         String
+  userId         String?
   user           User?            @relation(fields: [userId], references: [id])
   discordUserId  String
   type           IdentityCardType

@@ -6,7 +6,6 @@
     "target": "ES2022",
     "lib": ["ES2022"],
     "outDir": "dist",
-    "rootDir": "src",
     "declaration": false,
     "sourceMap": true,
     "esModuleInterop": true,
@@ -18,10 +17,7 @@
     "experimentalDecorators": true,
     "emitDecoratorMetadata": false,
     "baseUrl": ".",
-    "paths": {
-      "@nexusbot/database": ["../../packages/database/src/index.ts"],
-      "@nexusbot/shared": ["../../packages/shared/src/index.ts"]
-    }
+    "paths": {}
   },
   "include": ["src/**/*.ts"],
   "exclude": ["node_modules", "dist"]

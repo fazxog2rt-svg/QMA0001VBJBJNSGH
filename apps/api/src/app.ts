@@ -23,7 +23,7 @@ import identityCardsRouter from "./modules/identity-cards/router";
 import analyticsRouter from "./modules/analytics/router";
 import premiumRouter from "./modules/premium/router";
 import webhooksRouter from "./modules/webhooks/router";
-import adminRouter from "./modules/admin/router";
+import adminRouter, { guildBackupRouter } from "./modules/admin/router";
 import publicRouter from "./modules/public/router";
 
 export function createApp(): Express {
@@ -79,7 +79,7 @@ export function createApp(): Express {
   app.use("/api/v1/premium", premiumRouter);
   app.use("/api/v1/webhooks", webhooksRouter);
   app.use("/api/v1/admin", adminRouter);
-  app.use("/api/v1/guilds", adminRouter.guildBackupRouter);
+  app.use("/api/v1/guilds", guildBackupRouter);
   app.use("/api/v1/public", publicRouter);
 
   app.use(notFoundHandler);
