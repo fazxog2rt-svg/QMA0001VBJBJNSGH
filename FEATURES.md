@@ -106,12 +106,31 @@ Moderation → Security → AI → Economy → Events → Testing → Optimasi �
 | Ticket Logs | implemented | Ke `GuildConfig.tickets.logChannelId` jika diset |
 | Nomor tiket unik otomatis | implemented | Counter atomik per-guild (`ticket:<guildId>`) |
 
+## Moderasi — Stage 13 (selesai)
+
+| Feature | Status | Catatan |
+|---|---|---|
+| `/warn` | implemented | DM notifikasi best-effort + case tercatat |
+| `/mute` / `/unmute` | implemented | Role "Muted" auto-provisioned dengan overwrite di semua channel teks/voice |
+| `/timeout` / `/untimeout` | implemented | Fitur bawaan Discord (maks 28 hari) |
+| `/kick` | implemented | Mengecek `member.kickable` sebelum eksekusi |
+| `/ban` (dengan opsi hapus pesan N hari) | implemented | Mengecek `member.bannable` |
+| `/tempban` | implemented | Auto-unban via cron setiap menit (`cronJobs.ts`) saat `expiresAt` terlewati |
+| `/softban` | implemented | Ban + unban langsung untuk membersihkan riwayat pesan |
+| `/unban` | implemented | Validasi target benar-benar sedang dibanned |
+| `/purge` (opsional filter per-user) | implemented | Bulk delete maks 100 pesan |
+| `/lockdown` / `/unlock` | implemented | Toggle permission SendMessages untuk @everyone |
+| `/slowmode` | implemented | 0-21600 detik |
+| Nickname Filter (`/nickname-filter tambah/hapus/list`) | implemented | Auto-reset nickname di `guildMemberUpdate` jika mengandung kata terlarang |
+| `/case lihat/riwayat` | implemented | Lookup per nomor kasus atau riwayat lengkap per member (paginated) |
+| Perlindungan target | implemented | Tidak bisa moderasi diri sendiri, owner server, atau bot itu sendiri (`isModerationTargetSafe`) |
+| Nomor kasus atomik | implemented | Counter per-guild, konsisten dengan pola KTP/tiket |
+
 ## Belum dikerjakan (menunggu checkpoint tahap berikutnya)
 
 Setiap modul berikut butuh command + business logic + (untuk beberapa) rendering
 canvas/PDF. Skema database untuk semua ini sudah ada di `src/database/models/`.
 
-- **Moderasi** — warn/mute/timeout/kick/ban/tempban/softban/purge/lockdown
 - **Keamanan** — anti-raid, anti-nuke, anti-spam, anti-scam, captcha, alt/VPN detection, audit log, backup/restore role
 - **Utilitas tambahan** — QR generator, password generator, UUID generator, embed builder, calculator, JSON formatter
 - **AI (OpenRouter)** — chat, translate, summarize, coding assistant, AI moderator, FAQ, prompt generator, grammar checker

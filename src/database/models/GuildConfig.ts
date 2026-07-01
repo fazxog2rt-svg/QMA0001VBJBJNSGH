@@ -51,6 +51,11 @@ const guildConfigSchema = new Schema(
       maxMentionsPerMessage: { type: Number, default: 5 },
     },
 
+    moderation: {
+      mutedRoleId: { type: String },
+      nicknameFilterWords: { type: [String], default: [] },
+    },
+
     security: {
       antiRaid: { type: Boolean, default: true },
       antiNuke: { type: Boolean, default: true },

@@ -3,6 +3,7 @@ import type { BotClient } from "../../client";
 import { Reminder } from "../../database/models/Reminder";
 import { Birthday } from "../../database/models/Birthday";
 import { GuildConfig } from "../../database/models/GuildConfig";
+import { ModerationCase } from "../../database/models/ModerationCase";
 import { buildEmbed } from "../../utils/embed";
 import { logger } from "../logger.service";
 
@@ -67,7 +68,39 @@ async function announceBirthdays(client: BotClient): Promise<void> {
   }
 }
 
+async function processExpiredTempbans(client: BotClient): Promise<void> {
+  const expiredCases = await ModerationCase.find({
+    type: "tempban",
+    active: true,
+    expiresAt: { $lte: new Date() },
+  });
+
+  for (const moderationCase of expiredCases) {
+    try {
+      const guild = await client.guilds.fetch(moderationCase.guildId).catch(() => null);
+      await guild?.members
+        .unban(moderationCase.targetId, "Tempban berakhir otomatis")
+        .catch(() => undefined);
+    } catch (error) {
+      logger.warn("Gagal memproses unban otomatis", {
+        error: error instanceof Error ? error.message : error,
+      });
+    } finally {
+      moderationCase.active = false;
+      await moderationCase.save();
+    }
+  }
+}
+
 export function startScheduler(client: BotClient): void {
+  cron.schedule("* * * * *", () => {
+    processExpiredTempbans(client).catch((error) => {
+      logger.error("Gagal memproses tempban terjadwal", {
+        error: error instanceof Error ? error.message : error,
+      });
+    });
+  });
+
   cron.schedule("* * * * *", () => {
     processDueReminders(client).catch((error) => {
       logger.error("Gagal memproses reminder terjadwal", {
@@ -88,5 +121,7 @@ export function startScheduler(client: BotClient): void {
     { timezone: "Asia/Jakarta" },
   );
 
-  logger.info("Cron scheduler dimulai (reminder setiap menit, ulang tahun setiap jam 08:00 WIB).");
+  logger.info(
+    "Cron scheduler dimulai (reminder & tempban setiap menit, ulang tahun setiap jam 08:00 WIB).",
+  );
 }
