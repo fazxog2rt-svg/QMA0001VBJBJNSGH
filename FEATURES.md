@@ -56,12 +56,25 @@ Moderation → Security → AI → Economy → Events → Testing → Optimasi �
 | `/badge beri` / `/badge cabut` (admin, Manage Server) | implemented | Entry point manual untuk badge system; pemberian otomatis (mis. saat boost) menyusul di stage terkait |
 | Reputation, XP/Level display | implemented (read-only) | Nilainya masih 0 sampai stage Leveling/Komunitas menulis counter-nya — ini disengaja, bukan bug |
 
+## Leveling — Stage 10 (selesai)
+
+| Feature | Status | Catatan |
+|---|---|---|
+| XP dari pesan (cooldown 60 detik, 15-25 XP acak) | implemented | `messageCreate.ts` + `awardMessageXp()`; `messageCount` naik di setiap pesan terlepas dari cooldown XP |
+| XP dari voice (5 XP/menit) | implemented | `voiceStateUpdate.ts`, sesi dilacak di memori (`client.voiceSessions`), channel AFK guild dikecualikan |
+| XP Event (bonus manual) | implemented | `/xp beri` (admin) — juga bisa untuk mengurangi XP (nilai negatif) |
+| `/rank [user]` — kartu rank canvas (avatar, rank #, level/prestige, XP bar) | implemented | `rankCardRenderer.ts` — diverifikasi visual |
+| `/leaderboard` — papan peringkat XP, paginated (maks 5 halaman × 10) | implemented | Pakai mention `<@id>` agar tidak perlu fetch member satu-satu |
+| Role Reward (`/level-role tambah/hapus/list`, auto-assign saat naik level) | implemented | Role bersifat kumulatif (semua reward level ≤ level baru yang belum dimiliki akan diberikan) |
+| Prestige (`/prestige`, minimal Level 50, reset level+XP, badge/achievement tetap) | implemented | Pakai confirm dialog sebelum reset (aksi destruktif) |
+| Pengumuman naik level | implemented | Ke `GuildConfig.leveling.announceChannelId` jika diset dan `leveling.enabled` |
+| Voice anti-abuse (anti-AFK-farm) | simplified | Hanya mengecualikan channel AFK guild; tidak ada deteksi solo-channel/deafen — bisa ditambah di stage Security jika diperlukan |
+
 ## Belum dikerjakan (menunggu checkpoint tahap berikutnya)
 
 Setiap modul berikut butuh command + business logic + (untuk beberapa) rendering
 canvas/PDF. Skema database untuk semua ini sudah ada di `src/database/models/`.
 
-- **Leveling** — XP message/voice, rank card (canvas), leaderboard, role reward, prestige
 - **Komunitas** — daily/weekly reward, reputation, poll, suggestion, starboard, birthday, reminder, AFK, confession, temp voice, welcome/goodbye card, auto role, reaction role
 - **Tiket** — panel, claim/close/reopen, rating, transcript HTML/PDF
 - **Moderasi** — warn/mute/timeout/kick/ban/tempban/softban/purge/lockdown

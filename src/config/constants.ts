@@ -2,6 +2,7 @@ export const XP_MESSAGE_MIN = 15;
 export const XP_MESSAGE_MAX = 25;
 export const XP_MESSAGE_COOLDOWN_SECONDS = 60;
 export const XP_VOICE_PER_MINUTE = 5;
+export const PRESTIGE_MIN_LEVEL = 50;
 
 export function xpForLevel(level: number): number {
   return 5 * level ** 2 + 50 * level + 100;

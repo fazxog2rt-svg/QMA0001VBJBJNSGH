@@ -11,6 +11,8 @@ export class BotClient extends Client {
   public readonly cooldowns = new Collection<string, Collection<string, number>>();
   public readonly afkUsers = new Collection<string, { reason: string; since: number }>();
   public readonly inviteCache = new Collection<string, Collection<string, number>>();
+  /** Voice XP session tracking, keyed by `${guildId}:${userId}` -> session start timestamp (ms). */
+  public readonly voiceSessions = new Collection<string, number>();
 
   constructor() {
     super({
