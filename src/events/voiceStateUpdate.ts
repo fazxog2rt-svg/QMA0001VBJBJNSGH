@@ -1,6 +1,10 @@
 import type { VoiceState } from "discord.js";
 import type { BotClient } from "../client";
 import { awardVoiceXp, handleLevelUpSideEffects } from "../services/leveling/levelingService";
+import {
+  handleTempVoiceCleanup,
+  handleTempVoiceJoin,
+} from "../services/community/tempVoiceService";
 import { logger } from "../services/logger.service";
 import type { BotEvent } from "../types/event";
 
@@ -36,6 +40,17 @@ const event: BotEvent<"voiceStateUpdate"> = {
   name: "voiceStateUpdate",
   execute: async (client: BotClient, oldState: VoiceState, newState: VoiceState) => {
     if (newState.member?.user.bot) return;
+
+    if (oldState.channelId !== newState.channelId) {
+      try {
+        if (newState.channelId) await handleTempVoiceJoin(newState);
+        if (oldState.channelId) await handleTempVoiceCleanup(oldState);
+      } catch (error) {
+        logger.error("Gagal memproses temp voice channel", {
+          error: error instanceof Error ? error.message : error,
+        });
+      }
+    }
 
     const afkChannelId = newState.guild.afkChannelId;
     const key = sessionKey(newState.guild.id, newState.id);

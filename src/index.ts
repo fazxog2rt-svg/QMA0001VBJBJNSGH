@@ -6,6 +6,7 @@ import { loadComponents } from "./handlers/componentHandler";
 import { loadEvents } from "./handlers/eventHandler";
 import { connectRedis, disconnectRedis } from "./services/redis.service";
 import { logger } from "./services/logger.service";
+import { startScheduler } from "./services/scheduler/cronJobs";
 import { initLocales } from "./utils/locale";
 
 async function bootstrap(): Promise<void> {
@@ -20,6 +21,7 @@ async function bootstrap(): Promise<void> {
   await loadComponents(client);
 
   await client.login(env.DISCORD_TOKEN);
+  startScheduler(client);
 
   const shutdown = async (signal: string): Promise<void> => {
     logger.info(`Menerima ${signal}, mematikan bot dengan aman...`);

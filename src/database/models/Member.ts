@@ -46,6 +46,7 @@ const memberSchema = new Schema(
 
     // Reputation & badges
     reputation: { type: Number, default: 0 },
+    lastReputationGivenAt: { type: Date },
     badges: { type: [badgeSchema], default: [] },
     achievements: { type: [achievementProgressSchema], default: [] },
 

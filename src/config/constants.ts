@@ -4,6 +4,10 @@ export const XP_MESSAGE_COOLDOWN_SECONDS = 60;
 export const XP_VOICE_PER_MINUTE = 5;
 export const PRESTIGE_MIN_LEVEL = 50;
 
+export const DAILY_COOLDOWN_HOURS = 20;
+export const DAILY_STREAK_GRACE_HOURS = 48;
+export const REPUTATION_COOLDOWN_HOURS = 24;
+
 export function xpForLevel(level: number): number {
   return 5 * level ** 2 + 50 * level + 100;
 }

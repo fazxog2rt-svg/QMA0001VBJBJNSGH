@@ -13,6 +13,7 @@ const guildConfigSchema = new Schema(
     goodbyeChannelId: { type: String },
     goodbyeMessage: { type: String, default: "{user} telah meninggalkan {server}." },
     autoRoleIds: { type: [String], default: [] },
+    birthdayChannelId: { type: String },
 
     logChannels: {
       moderation: { type: String },
@@ -85,6 +86,15 @@ const guildConfigSchema = new Schema(
       enabled: { type: Boolean, default: false },
       hubChannelId: { type: String },
       categoryChannelId: { type: String },
+    },
+
+    suggestions: {
+      channelId: { type: String },
+    },
+
+    confession: {
+      channelId: { type: String },
+      nextConfessionNumber: { type: Number, default: 1 },
     },
   },
   { timestamps: true },

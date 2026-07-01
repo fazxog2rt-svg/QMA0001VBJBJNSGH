@@ -70,18 +70,37 @@ Moderation → Security → AI → Economy → Events → Testing → Optimasi �
 | Pengumuman naik level | implemented | Ke `GuildConfig.leveling.announceChannelId` jika diset dan `leveling.enabled` |
 | Voice anti-abuse (anti-AFK-farm) | simplified | Hanya mengecualikan channel AFK guild; tidak ada deteksi solo-channel/deafen — bisa ditambah di stage Security jika diperlukan |
 
+## Komunitas — Stage 11 (selesai)
+
+| Feature | Status | Catatan |
+|---|---|---|
+| `/daily` — reward harian + streak (bonus 5 koin/hari streak, maks +150) | implemented | Cooldown 20 jam, streak reset jika tidak klaim dalam 48 jam (`dailyService.ts`) |
+| `/reputasi` — beri reputasi ke member lain | implemented | Cooldown 24 jam per pemberi, tidak bisa ke diri sendiri/bot |
+| `/poll` — polling reaksi (maks 10 opsi) | implemented | Emoji angka 1️⃣-🔟 |
+| `/suggest` — kirim saran + approve/deny admin via button | implemented | Reaksi 👍👎 + tombol untuk moderator |
+| Starboard (`/starboard aktifkan/nonaktifkan`) | implemented | `starboardService.ts`, update/hapus post otomatis mengikuti jumlah reaksi |
+| `/birthday set/lihat/atur-channel` + pengumuman otomatis | implemented | Cron harian jam 08:00 WIB (`cronJobs.ts`) |
+| `/remind` — pengingat dengan parser durasi (`10m`, `2h`, `1d2h30m`) | implemented | Diverifikasi lewat unit-level smoke test; cron cek setiap menit |
+| `/afk` — status AFK + auto-clear saat kirim pesan + notifikasi saat di-mention | implemented | Disimpan di `Member` (persisten, bukan in-memory) |
+| `/confess` — confession anonim bernomor urut + `/confess atur-channel` | implemented | `authorId` disimpan hanya untuk penanganan penyalahgunaan, tidak pernah ditampilkan publik |
+| `/anon` — pesan anonim ke channel pilihan pengirim | implemented | Memvalidasi pengirim benar-benar punya izin Send Messages di channel tujuan sebelum mengirim |
+| Temporary Voice Channel (`/tempvoice setup/kunci/buka/limit`) | implemented | Auto-create saat join hub, auto-delete saat kosong (`tempVoiceService.ts`) |
+| Welcome Card & Goodbye Card (canvas) | implemented | `welcomeCardRenderer.ts` — diverifikasi visual untuk kedua varian |
+| Auto Role (`/autorole tambah/hapus/list`) | implemented | Diterapkan otomatis di `guildMemberAdd` |
+| Reaction Role (`/reactionrole tambah/hapus/list`) | implemented | Mendukung emoji unicode & custom emoji server |
+| Voice Activity Tracker | implemented (Stage 10) | `Member.voiceMinutes`, sudah dipakai di profil, rank card, dan achievement |
+
 ## Belum dikerjakan (menunggu checkpoint tahap berikutnya)
 
 Setiap modul berikut butuh command + business logic + (untuk beberapa) rendering
 canvas/PDF. Skema database untuk semua ini sudah ada di `src/database/models/`.
 
-- **Komunitas** — daily/weekly reward, reputation, poll, suggestion, starboard, birthday, reminder, AFK, confession, temp voice, welcome/goodbye card, auto role, reaction role
 - **Tiket** — panel, claim/close/reopen, rating, transcript HTML/PDF
 - **Moderasi** — warn/mute/timeout/kick/ban/tempban/softban/purge/lockdown
 - **Keamanan** — anti-raid, anti-nuke, anti-spam, anti-scam, captcha, alt/VPN detection, audit log, backup/restore role
 - **Utilitas tambahan** — QR generator, password generator, UUID generator, embed builder, calculator, JSON formatter
 - **AI (OpenRouter)** — chat, translate, summarize, coding assistant, AI moderator, FAQ, prompt generator, grammar checker
 - **Hiburan** — meme, trivia, truth or dare, would-you-rather, coinflip, dice, 8ball, pet, fishing, daily quest
-- **Ekonomi** — wallet/bank, shop, inventory, transfer, leaderboard
+- **Ekonomi** — wallet/bank, shop, inventory, transfer, weekly reward, leaderboard (`/daily` sudah ada di stage Komunitas, `walletBalance` sudah dipakai olehnya)
 - **Event komunitas** — RSVP, countdown, attendance, lucky draw, giveaway
 - **Testing menyeluruh** per modul, optimasi (Redis cache di leaderboard/cooldown), dokumentasi command

@@ -1,7 +1,31 @@
 import type { Message } from "discord.js";
 import { awardMessageXp, handleLevelUpSideEffects } from "../services/leveling/levelingService";
+import { clearAfkIfNeeded, getAfkMentionInfo } from "../services/community/afkService";
 import { logger } from "../services/logger.service";
 import type { BotEvent } from "../types/event";
+
+async function handleAfk(message: Message<true>): Promise<void> {
+  const cleared = await clearAfkIfNeeded(message.guildId, message.author.id);
+  if (cleared.wasAfk) {
+    await message
+      .reply({ content: `👋 Selamat datang kembali, ${message.author}! AFK-mu telah dihapus.` })
+      .catch(() => undefined);
+  }
+
+  const mentionedUserIds = message.mentions.users
+    .filter((user) => !user.bot)
+    .map((user) => user.id);
+  if (mentionedUserIds.length === 0) return;
+
+  const afkMentions = await getAfkMentionInfo(message.guildId, mentionedUserIds);
+  if (afkMentions.length === 0) return;
+
+  const lines = afkMentions.map(
+    (info) =>
+      `<@${info.userId}> sedang AFK: ${info.reason} (<t:${Math.floor(info.since.getTime() / 1000)}:R>)`,
+  );
+  await message.reply({ content: lines.join("\n") }).catch(() => undefined);
+}
 
 const event: BotEvent<"messageCreate"> = {
   name: "messageCreate",
@@ -9,6 +33,8 @@ const event: BotEvent<"messageCreate"> = {
     if (message.author.bot || !message.inGuild()) return;
 
     try {
+      await handleAfk(message);
+
       const result = await awardMessageXp(message.guildId, message.author.id);
       if (!result?.leveledUp) return;
 
@@ -18,7 +44,7 @@ const event: BotEvent<"messageCreate"> = {
 
       await handleLevelUpSideEffects(message.guild, discordMember, result);
     } catch (error) {
-      logger.error("Gagal memproses XP pesan", {
+      logger.error("Gagal memproses pesan", {
         error: error instanceof Error ? error.message : error,
       });
     }
