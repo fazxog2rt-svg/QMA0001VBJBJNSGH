@@ -200,7 +200,24 @@ Moderation → Security → AI → Economy → Events → Testing → Optimasi �
 | `/daily-quest` | implemented | Quest harian deterministik (sama untuk semua member per hari) |
 | Pet Collection / Fishing | planned | `Pet` & `TransactionType.FISHING/MINING` ada di skema; gameplay loop belum dibuat — kandidat plugin/iterasi lanjutan |
 
+## Event System — Stage 17 (selesai)
+
+| Feature | Status | Catatan |
+|---|---|---|
+| `/event buat` (admin, Manage Events) | implemented | Embed event + tombol RSVP |
+| RSVP (Hadir / Mungkin / Tidak) | implemented | Tombol, hitungan realtime di-update di embed |
+| Countdown | implemented | Discord relative timestamp `<t:...:R>` |
+| Reminder | implemented | Cron per-menit meng-ping peserta "Hadir" ~1 jam sebelum mulai (`reminded` flag mencegah spam) |
+| Attendance | implemented | Saat `/event selesai`, peserta RSVP "going" dicatat ke `attendanceUserIds` |
+| Event Badge | implemented | Badge (opsional) otomatis dibagikan ke semua peserta yang hadir |
+| Lucky Draw | implemented | `/event selesai` mengundi 1 pemenang acak dari peserta hadir |
+| `/event list` | implemented | Event mendatang, paginated-ready |
+| Giveaway Integration (`/giveaway mulai/akhiri`) | implemented | Tombol ikut (toggle join/leave), auto-end via cron per-menit, undian pemenang acak tanpa duplikat |
+
+## Testing, Optimasi & Dokumentasi — Stage 18-20
+
+Lihat bagian bawah file ini setelah stage tersebut selesai.
+
 ## Belum dikerjakan
 
-- **Event komunitas** — RSVP, countdown, attendance, lucky draw, giveaway
 - **Testing menyeluruh** per modul, optimasi (Redis cache di leaderboard/cooldown), dokumentasi command

@@ -4,6 +4,8 @@ import { Reminder } from "../../database/models/Reminder";
 import { Birthday } from "../../database/models/Birthday";
 import { GuildConfig } from "../../database/models/GuildConfig";
 import { ModerationCase } from "../../database/models/ModerationCase";
+import { CommunityEvent } from "../../database/models/CommunityEvent";
+import { processDueGiveaways } from "../events/giveawayService";
 import { buildEmbed } from "../../utils/embed";
 import { logger } from "../logger.service";
 
@@ -92,10 +94,59 @@ async function processExpiredTempbans(client: BotClient): Promise<void> {
   }
 }
 
+async function processDueEventReminders(client: BotClient): Promise<void> {
+  const soon = new Date(Date.now() + 60 * 60 * 1000);
+  const events = await CommunityEvent.find({
+    completed: false,
+    reminded: false,
+    startsAt: { $lte: soon, $gt: new Date() },
+  });
+
+  for (const event of events) {
+    try {
+      const channel = await client.channels.fetch(event.channelId).catch(() => null);
+      if (channel?.isTextBased() && "send" in channel) {
+        const goingMentions = event.rsvp
+          .filter((entry) => entry.status === "going")
+          .map((entry) => `<@${entry.userId}>`)
+          .join(" ");
+        await channel.send({
+          content: goingMentions || undefined,
+          embeds: [
+            buildEmbed("premium").setDescription(
+              `⏰ Event **${event.title}** akan dimulai <t:${Math.floor(event.startsAt.getTime() / 1000)}:R>!`,
+            ),
+          ],
+        });
+      }
+    } catch (error) {
+      logger.warn("Gagal mengirim reminder event", {
+        error: error instanceof Error ? error.message : error,
+      });
+    } finally {
+      event.reminded = true;
+      await event.save();
+    }
+  }
+}
+
 export function startScheduler(client: BotClient): void {
   cron.schedule("* * * * *", () => {
     processExpiredTempbans(client).catch((error) => {
       logger.error("Gagal memproses tempban terjadwal", {
+        error: error instanceof Error ? error.message : error,
+      });
+    });
+  });
+
+  cron.schedule("* * * * *", () => {
+    processDueGiveaways(client).catch((error) => {
+      logger.error("Gagal memproses giveaway terjadwal", {
+        error: error instanceof Error ? error.message : error,
+      });
+    });
+    processDueEventReminders(client).catch((error) => {
+      logger.error("Gagal memproses reminder event terjadwal", {
         error: error instanceof Error ? error.message : error,
       });
     });
