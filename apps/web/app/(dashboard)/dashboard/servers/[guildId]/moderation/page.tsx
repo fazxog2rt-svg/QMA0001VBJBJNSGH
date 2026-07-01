@@ -53,8 +53,6 @@ const actionColor: Record<ModerationAction, "destructive" | "warning" | "seconda
   LOCKDOWN: "destructive",
 };
 
-type ActionFormValues = z.infer<typeof moderationActionSchema> & { action: ModerationAction };
-
 export default function ModerationPage() {
   const { guildId } = useParams<{ guildId: string }>();
   const [cases, setCases] = React.useState<ModerationCase[]>([]);

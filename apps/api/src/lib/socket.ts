@@ -8,7 +8,7 @@ import {
   RealtimeEvent,
   type RealtimeEnvelope,
 } from "@nexusbot/shared";
-import { corsOrigins, env } from "../config/env";
+import { corsOrigins } from "../config/env";
 import { verifyAccessToken } from "./jwt";
 import { subscribeToRealtimeEvents } from "./redis";
 import { childLogger } from "./logger";

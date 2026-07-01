@@ -47,9 +47,21 @@ export interface ButtonProps
 
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
   ({ className, variant, size, asChild = false, loading = false, children, disabled, ...props }, ref) => {
-    const Comp = asChild ? Slot : "button";
+    // When asChild is set, Radix's Slot requires exactly one React element
+    // child — so we can't conditionally splice in a loading spinner
+    // alongside `children` the way we do for a plain <button>. Fall back to
+    // rendering the single child as-is (asChild buttons are typically links
+    // that don't show the async loading state anyway).
+    if (asChild) {
+      return (
+        <Slot className={cn(buttonVariants({ variant, size, className }))} ref={ref} {...props}>
+          {children}
+        </Slot>
+      );
+    }
+
     return (
-      <Comp
+      <button
         className={cn(buttonVariants({ variant, size, className }))}
         ref={ref}
         disabled={disabled || loading}
@@ -57,7 +69,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
       >
         {loading && <Loader2 className="animate-spin" />}
         {children}
-      </Comp>
+      </button>
     );
   },
 );

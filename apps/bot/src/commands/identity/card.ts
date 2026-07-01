@@ -1,4 +1,4 @@
-import { SlashCommandBuilder, AttachmentBuilder, MessageFlags } from "discord.js";
+import { SlashCommandBuilder, AttachmentBuilder } from "discord.js";
 import { prisma, IdentityCardType } from "@nexusbot/database";
 import { IDENTITY_CARD_THEMES, identityCardCreateSchema } from "@nexusbot/shared";
 import type { Command } from "../../types/command";

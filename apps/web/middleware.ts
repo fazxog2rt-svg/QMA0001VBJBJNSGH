@@ -7,7 +7,7 @@ import type { NextRequest } from "next/server";
  * middleware only checks for cookie *presence*; the API is the source of
  * truth for signature/expiry validation on every request it serves.
  */
-const ACCESS_TOKEN_COOKIE = "nexus_access_token";
+const ACCESS_TOKEN_COOKIE = "access_token";
 
 const PROTECTED_PREFIXES = ["/dashboard", "/admin"];
 

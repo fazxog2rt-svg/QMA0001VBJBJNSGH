@@ -12,7 +12,7 @@ interface UseCurrentUserResult {
 }
 
 /**
- * Fetches the authenticated user's profile from GET /api/v1/auth/me.
+ * Fetches the authenticated user's profile from GET /api/v1/users/me.
  * Returns `user: null` (not an error) on 401 so callers can render a
  * logged-out state without throwing.
  */
@@ -25,7 +25,7 @@ export function useCurrentUser(): UseCurrentUserResult {
   useEffect(() => {
     const controller = new AbortController();
     setLoading(true);
-    apiGet<User>("/auth/me", undefined, controller.signal)
+    apiGet<User>("/users/me", undefined, controller.signal)
       .then((data) => {
         setUser(data);
         setError(null);

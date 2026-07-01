@@ -1,4 +1,4 @@
-import { SlashCommandBuilder, EmbedBuilder, MessageFlags } from "discord.js";
+import { SlashCommandBuilder, EmbedBuilder } from "discord.js";
 import { prisma } from "@nexusbot/database";
 import { xpForLevel } from "@nexusbot/shared";
 import type { Command } from "../../types/command";

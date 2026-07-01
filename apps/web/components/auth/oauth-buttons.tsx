@@ -1,6 +1,6 @@
 "use client";
 
-import { env } from "@/lib/env";
+import { API_V1 } from "@/lib/env";
 import { Button } from "@/components/ui/button";
 
 function DiscordIcon() {
@@ -38,12 +38,12 @@ export function OAuthButtons() {
   return (
     <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
       <Button asChild variant="secondary" className="w-full">
-        <a href={`${process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:4000"}/api/v1/auth/discord`}>
+        <a href={`${API_V1}/auth/discord`}>
           <DiscordIcon /> Continue with Discord
         </a>
       </Button>
       <Button asChild variant="secondary" className="w-full">
-        <a href={`${process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:4000"}/api/v1/auth/google`}>
+        <a href={`${API_V1}/auth/google`}>
           <GoogleIcon /> Continue with Google
         </a>
       </Button>

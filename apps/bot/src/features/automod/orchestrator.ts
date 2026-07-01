@@ -143,7 +143,7 @@ export async function runAutoMod(
   const ownGuildInviteCodes = ownInvites.map((i) => i.code);
 
   for (const rule of enabledRules) {
-    let verdict = await evaluateRule(message, rule, ownGuildInviteCodes);
+    const verdict = await evaluateRule(message, rule, ownGuildInviteCodes);
     if (!verdict) continue;
 
     // Escalate ambiguous scam/phishing cases to the AI provider when enabled.
