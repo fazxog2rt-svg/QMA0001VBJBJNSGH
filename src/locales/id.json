@@ -1,0 +1,14 @@
+{
+  "common": {
+    "no_permission": "Kamu tidak punya izin untuk menjalankan command ini.",
+    "cooldown": "Tunggu {{seconds}} detik lagi sebelum memakai command ini.",
+    "error_generic": "Terjadi kesalahan saat memproses permintaanmu.",
+    "confirm_prompt": "Apakah kamu yakin?",
+    "confirmed": "Dikonfirmasi.",
+    "cancelled": "Dibatalkan."
+  },
+  "ping": {
+    "title": "🏓 Pong!",
+    "description": "Latensi WebSocket: `{{ws}}ms` • Latensi Roundtrip: `{{roundtrip}}ms`"
+  }
+}

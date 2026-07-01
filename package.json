@@ -1,39 +1,63 @@
 {
-  "name": "nexusbot",
+  "name": "komunitas-bot",
   "version": "1.0.0",
   "private": true,
-  "description": "NexusBot — enterprise-grade Discord bot platform with dashboard, REST API, realtime WebSocket, and admin/analytics panels.",
-  "workspaces": [
-    "apps/*",
-    "packages/*"
-  ],
-  "scripts": {
-    "dev": "turbo run dev --parallel",
-    "build": "turbo run build",
-    "lint": "turbo run lint",
-    "test": "turbo run test",
-    "typecheck": "turbo run typecheck",
-    "clean": "turbo run clean && rimraf node_modules",
-    "db:generate": "npm run generate --workspace=@nexusbot/database",
-    "db:migrate": "npm run migrate:dev --workspace=@nexusbot/database",
-    "db:seed": "npm run seed --workspace=@nexusbot/database",
-    "db:studio": "npm run studio --workspace=@nexusbot/database",
-    "prepare": "husky install || true"
-  },
-  "devDependencies": {
-    "turbo": "^2.1.3",
-    "typescript": "^5.6.3",
-    "eslint": "^8.57.1",
-    "eslint-config-prettier": "^9.1.0",
-    "@typescript-eslint/eslint-plugin": "^7.18.0",
-    "@typescript-eslint/parser": "^7.18.0",
-    "prettier": "^3.3.3",
-    "rimraf": "^6.0.1",
-    "husky": "^9.1.6",
-    "lint-staged": "^15.2.10"
-  },
+  "description": "Discord Bot Community All-in-One untuk server komunitas publik Indonesia — identitas digital (KTP), leveling, ekonomi, tiket, moderasi, keamanan, dan AI, 100% dikontrol dari Discord.",
+  "type": "commonjs",
+  "main": "dist/index.js",
   "engines": {
     "node": ">=20.0.0"
   },
-  "packageManager": "npm@10.8.2"
+  "scripts": {
+    "dev": "tsx watch src/index.ts",
+    "build": "tsc -p tsconfig.json",
+    "start": "node dist/index.js",
+    "deploy-commands": "tsx src/handlers/deployCommands.ts",
+    "lint": "eslint \"src/**/*.ts\"",
+    "lint:fix": "eslint \"src/**/*.ts\" --fix",
+    "format": "prettier --write \"src/**/*.ts\"",
+    "typecheck": "tsc --noEmit -p tsconfig.json",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "prepare": "husky install || true"
+  },
+  "dependencies": {
+    "discord.js": "^14.16.3",
+    "mongoose": "^8.8.3",
+    "ioredis": "^5.4.1",
+    "zod": "^3.23.8",
+    "dotenv": "^16.4.5",
+    "winston": "^3.15.0",
+    "winston-daily-rotate-file": "^5.0.0",
+    "@napi-rs/canvas": "^0.1.65",
+    "qrcode": "^1.5.4",
+    "pdfkit": "^0.15.1",
+    "nanoid": "^5.0.7",
+    "node-cron": "^3.0.3",
+    "bottleneck": "^2.19.5",
+    "i18next": "^23.16.5",
+    "i18next-fs-backend": "^2.3.2",
+    "openai": "^4.71.1"
+  },
+  "devDependencies": {
+    "typescript": "^5.6.3",
+    "tsx": "^4.19.2",
+    "@types/node": "^20.17.6",
+    "@types/qrcode": "^1.5.5",
+    "@types/pdfkit": "^0.13.4",
+    "eslint": "^8.57.1",
+    "@typescript-eslint/eslint-plugin": "^7.18.0",
+    "@typescript-eslint/parser": "^7.18.0",
+    "eslint-config-prettier": "^9.1.0",
+    "prettier": "^3.3.3",
+    "husky": "^9.1.6",
+    "lint-staged": "^15.2.10",
+    "vitest": "^2.1.4"
+  },
+  "lint-staged": {
+    "src/**/*.ts": [
+      "eslint --fix",
+      "prettier --write"
+    ]
+  }
 }

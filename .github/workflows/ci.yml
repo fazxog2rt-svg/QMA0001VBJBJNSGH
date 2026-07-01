@@ -14,15 +14,11 @@ jobs:
   lint-typecheck-test:
     runs-on: ubuntu-latest
     services:
-      postgres:
-        image: postgres:16-alpine
-        env:
-          POSTGRES_USER: nexusbot
-          POSTGRES_PASSWORD: nexusbot
-          POSTGRES_DB: nexusbot
-        ports: ["5432:5432"]
+      mongo:
+        image: mongo:7
+        ports: ["27017:27017"]
         options: >-
-          --health-cmd "pg_isready -U nexusbot"
+          --health-cmd "mongosh --eval 'db.runCommand({ ping: 1 })'"
           --health-interval 5s
           --health-timeout 5s
           --health-retries 10
@@ -36,8 +32,10 @@ jobs:
           --health-retries 10
 
     env:
-      DATABASE_URL: postgresql://nexusbot:nexusbot@localhost:5432/nexusbot?schema=public
+      MONGODB_URI: mongodb://localhost:27017/komunitas-bot-ci
       REDIS_URL: redis://localhost:6379
+      DISCORD_TOKEN: ci-placeholder-token
+      DISCORD_CLIENT_ID: ci-placeholder-client-id
       NODE_ENV: test
 
     steps:
@@ -50,12 +48,6 @@ jobs:
 
       - name: Install dependencies
         run: npm ci --no-audit --no-fund
-
-      - name: Generate Prisma client
-        run: npm run db:generate
-
-      - name: Run migrations
-        run: npm run db:migrate --workspace=@nexusbot/database -- --name ci --skip-generate || npx prisma migrate deploy --schema packages/database/prisma/schema.prisma
 
       - name: Lint
         run: npm run lint
@@ -78,23 +70,9 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
-      - name: Build API image
+      - name: Build bot image
         uses: docker/build-push-action@v6
         with:
           context: .
-          file: docker/Dockerfile.api
-          push: false
-
-      - name: Build Bot image
-        uses: docker/build-push-action@v6
-        with:
-          context: .
-          file: docker/Dockerfile.bot
-          push: false
-
-      - name: Build Web image
-        uses: docker/build-push-action@v6
-        with:
-          context: .
-          file: docker/Dockerfile.web
+          file: Dockerfile
           push: false

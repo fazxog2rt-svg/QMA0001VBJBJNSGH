@@ -1,12 +1,11 @@
 node_modules
-**/node_modules
-**/dist
-**/.next
-**/.turbo
-**/coverage
+dist
+coverage
 .git
 .env
 .env.*
 !.env.example
-logs
+src/logs
 *.log
+storage/identity-cards
+storage/transcripts
