@@ -3,15 +3,16 @@ import {
   ButtonBuilder,
   ButtonStyle,
   ComponentType,
+  type ButtonInteraction,
   type ChatInputCommandInteraction,
 } from "discord.js";
 import { warningEmbed } from "./embed";
 
 const CONFIRM_TIMEOUT_MS = 30_000;
 
-/** Shows a confirm/cancel dialog and resolves to true/false/null (timeout). */
+/** Shows a confirm/cancel dialog and resolves to true/false/null (timeout). Interaction must already be deferred. */
 export async function askConfirmation(
-  interaction: ChatInputCommandInteraction,
+  interaction: ChatInputCommandInteraction | ButtonInteraction,
   question: string,
 ): Promise<boolean | null> {
   const row = new ActionRowBuilder<ButtonBuilder>().addComponents(

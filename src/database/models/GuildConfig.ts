@@ -65,6 +65,23 @@ const guildConfigSchema = new Schema(
       logChannelId: { type: String },
       supportRoleIds: { type: [String], default: [] },
       nextTicketNumber: { type: Number, default: 1 },
+      ticketTypes: {
+        type: [
+          new Schema(
+            {
+              key: { type: String, required: true },
+              label: { type: String, required: true },
+              emoji: { type: String, default: "🎫" },
+            },
+            { _id: false },
+          ),
+        ],
+        default: [
+          { key: "umum", label: "Pertanyaan Umum", emoji: "❓" },
+          { key: "laporan", label: "Laporan Member", emoji: "🚨" },
+          { key: "teknis", label: "Bantuan Teknis", emoji: "🛠️" },
+        ],
+      },
     },
 
     starboard: {

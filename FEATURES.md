@@ -90,12 +90,27 @@ Moderation → Security → AI → Economy → Events → Testing → Optimasi �
 | Reaction Role (`/reactionrole tambah/hapus/list`) | implemented | Mendukung emoji unicode & custom emoji server |
 | Voice Activity Tracker | implemented (Stage 10) | `Member.voiceMinutes`, sudah dipakai di profil, rank card, dan achievement |
 
+## Tiket — Stage 12 (selesai)
+
+| Feature | Status | Catatan |
+|---|---|---|
+| Multi Category (`/ticket-config tipe tambah/hapus/list`) | implemented | Default 3 tipe (Umum, Laporan, Teknis), bisa ditambah admin |
+| Panel tiket (`/ticket-panel`, select menu tipe tiket) | implemented | Membuat channel privat dengan permission overwrite otomatis |
+| Claim Ticket | implemented | Hanya role support/Manage Server yang bisa klaim |
+| Close Ticket | implemented | **Mengunci** channel (bukan menghapus) — opener kehilangan Send Messages, transkrip dibuat, DM rating dikirim |
+| Reopen Ticket | implemented | Staff bisa buka kembali izin kirim pesan tanpa membuat channel baru |
+| Hapus channel tiket | implemented | Tombol terpisah dari "Tutup", staff-only, pakai confirm dialog |
+| Ticket Rating | implemented | DM select menu 1-5 bintang ke pembuka tiket setelah ditutup |
+| Transcript HTML | implemented | Escaped dari XSS (diverifikasi lewat smoke test), dikirim ke log channel |
+| Transcript PDF | implemented | `pdfkit`, dikirim bersamaan dengan HTML |
+| Ticket Logs | implemented | Ke `GuildConfig.tickets.logChannelId` jika diset |
+| Nomor tiket unik otomatis | implemented | Counter atomik per-guild (`ticket:<guildId>`) |
+
 ## Belum dikerjakan (menunggu checkpoint tahap berikutnya)
 
 Setiap modul berikut butuh command + business logic + (untuk beberapa) rendering
 canvas/PDF. Skema database untuk semua ini sudah ada di `src/database/models/`.
 
-- **Tiket** — panel, claim/close/reopen, rating, transcript HTML/PDF
 - **Moderasi** — warn/mute/timeout/kick/ban/tempban/softban/purge/lockdown
 - **Keamanan** — anti-raid, anti-nuke, anti-spam, anti-scam, captcha, alt/VPN detection, audit log, backup/restore role
 - **Utilitas tambahan** — QR generator, password generator, UUID generator, embed builder, calculator, JSON formatter
