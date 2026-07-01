@@ -161,12 +161,46 @@ Moderation → Security → AI → Economy → Events → Testing → Optimasi �
 | Pencatatan penggunaan | implemented | `Member.aiUsageCount` (dipakai achievement "AI Explorer") + `AiChatLog` per pemakaian |
 | **Perbaikan fondasi**: Context Menu Command loader | implemented | Ternyata sejak Stage 4-7 belum ada loader untuk context menu command meski `client.contextMenuCommands` & `interactionCreate.ts` sudah menanganinya — ditambahkan `src/handlers/contextMenuHandler.ts` + folder `src/context-menus/`, dan `deployCommands.ts` diperbarui untuk mendaftarkan keduanya sekaligus |
 
-## Belum dikerjakan (menunggu checkpoint tahap berikutnya)
+## Ekonomi — Stage 16 (selesai)
 
-Setiap modul berikut butuh command + business logic + (untuk beberapa) rendering
-canvas/PDF. Skema database untuk semua ini sudah ada di `src/database/models/`.
-- **Utilitas tambahan** — QR generator, password generator, UUID generator, embed builder, calculator, JSON formatter
-- **Hiburan** — meme, trivia, truth or dare, would-you-rather, coinflip, dice, 8ball, pet, fishing, daily quest
-- **Ekonomi** — wallet/bank, shop, inventory, transfer, weekly reward, leaderboard (`/daily` sudah ada di stage Komunitas, `walletBalance` sudah dipakai olehnya)
+| Feature | Status | Catatan |
+|---|---|---|
+| `/balance` (wallet + bank + total) | implemented | |
+| `/weekly` | implemented | Cooldown 7 hari |
+| `/work` | implemented | Cooldown 1 jam, penghasilan acak 50-250 |
+| `/transfer` | implemented | Debit atomik via `findOneAndUpdate` bersyarat `walletBalance >= amount` — aman dari race/double-spend |
+| `/bank setor/tarik` | implemented | |
+| `/shop` + `/buy` + `/inventory` | implemented | Item bisa memberi role otomatis saat dibeli; stok terbatas/tak-terbatas |
+| `/shop-admin tambah/hapus/mata-uang` | implemented | Admin kelola item & simbol mata uang |
+| `/rich` (leaderboard terkaya) | implemented | Aggregation `wallet+bank`, di-sort di DB |
+| `/daily` | implemented (Stage 11) | Sudah ada sejak modul Komunitas |
+
+## Utilitas — Stage 16 (selesai)
+
+| Feature | Status | Catatan |
+|---|---|---|
+| `/qr` | implemented | Render PNG via `qrcode` |
+| `/password` | implemented | Pakai `crypto.randomInt` (bukan `Math.random`), balasan ephemeral |
+| `/uuid` | implemented | `crypto.randomUUID`, hingga 10 sekaligus |
+| `/timestamp` | implemented | Semua format Discord timestamp + offset opsional |
+| `/calc` | implemented | Evaluator shunting-yard **aman** (bukan `eval`/`Function`) — diverifikasi lewat unit test bahwa input seperti `process.exit(1)` ditolak, bukan dieksekusi |
+| `/json-format` | implemented | Validasi + pretty-print, ephemeral |
+| `/color` | implemented | Swatch canvas + nilai RGB |
+| `/embed-builder` | implemented | Modal → embed custom (admin) |
+| `/announce` | implemented | Pengumuman ber-embed, mention @everyone dicek izin `MentionEveryone` dulu |
+
+## Hiburan — Stage 16 (selesai)
+
+| Feature | Status | Catatan |
+|---|---|---|
+| `/coinflip`, `/dice`, `/8ball` | implemented | |
+| `/tod` (Truth / Dare / Would You Rather) | implemented | Konten lokal Bahasa Indonesia |
+| `/meme` | implemented | Fetch dari meme-api.com, filter NSFW, fallback error graceful |
+| `/trivia` | implemented | Open Trivia DB, tombol pilihan ganda + timer 20 detik |
+| `/daily-quest` | implemented | Quest harian deterministik (sama untuk semua member per hari) |
+| Pet Collection / Fishing | planned | `Pet` & `TransactionType.FISHING/MINING` ada di skema; gameplay loop belum dibuat — kandidat plugin/iterasi lanjutan |
+
+## Belum dikerjakan
+
 - **Event komunitas** — RSVP, countdown, attendance, lucky draw, giveaway
 - **Testing menyeluruh** per modul, optimasi (Redis cache di leaderboard/cooldown), dokumentasi command

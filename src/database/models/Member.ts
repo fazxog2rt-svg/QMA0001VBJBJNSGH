@@ -65,6 +65,7 @@ const memberSchema = new Schema(
     dailyStreak: { type: Number, default: 0 },
     lastDailyClaimAt: { type: Date },
     lastWeeklyClaimAt: { type: Date },
+    lastWorkAt: { type: Date },
     boosts: { type: Number, default: 0 },
     ticketsClaimed: { type: Number, default: 0 },
     aiUsageCount: { type: Number, default: 0 },
