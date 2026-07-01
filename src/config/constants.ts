@@ -17,6 +17,15 @@ export function levelFromXp(xp: number): number {
   return level;
 }
 
+/** Total cumulative XP required to reach the start of `level` from level 0. */
+export function totalXpForLevel(level: number): number {
+  let total = 0;
+  for (let i = 0; i < level; i += 1) {
+    total += xpForLevel(i);
+  }
+  return total;
+}
+
 export const BADGE_DEFINITIONS = [
   { key: "verified", name: "Verified", emoji: "✅", description: "Sudah lolos verifikasi member." },
   { key: "developer", name: "Developer", emoji: "🛠️", description: "Kontributor teknis server." },

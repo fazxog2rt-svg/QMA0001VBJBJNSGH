@@ -45,12 +45,22 @@ Moderation → Security → AI → Economy → Events → Testing → Optimasi �
 | Kewarganegaraan | simplified | Default "WNI" (tidak ada input UI) — modal Discord dibatasi 5 field × 2 modal sudah terisi penuh oleh 10 field lain. Bisa ditambahkan sebagai select menu ke-4 di iterasi berikutnya jika dibutuhkan. |
 | Privasi | by design | `/ktp lihat` untuk user lain dibatasi ke admin (Manage Server) saja — data berbentuk NIK/alamat tidak ditampilkan bebas ke publik meski datanya fiktif/community-only. |
 
+## Member Profile — Stage 9 (selesai)
+
+| Feature | Status | Catatan |
+|---|---|---|
+| `/profile lihat [user]` — kartu profil canvas (avatar, banner, bio, badge chip, XP bar, stats) | implemented | `profileCardRenderer.ts` — diverifikasi visual, badge dirender sebagai chip teks (bukan emoji, karena font emoji tidak tersedia lintas platform di `@napi-rs/canvas`) |
+| `/profile edit [banner]` — modal (bio, pronouns, warna favorit, media sosial) di-prefill dari data saat ini | implemented | Banner via attachment option (pola sama seperti KTP), field lain via modal |
+| Parsing media sosial dari textarea `Platform: handle` per baris ke `Map` | implemented | `profileService.ts` |
+| `/profile achievements` — progres achievement berbasis counter yang sudah ada di skema Member | implemented | Progress akan otomatis terisi begitu stage Leveling/Tickets/AI/Economy menulis counter-nya |
+| `/badge beri` / `/badge cabut` (admin, Manage Server) | implemented | Entry point manual untuk badge system; pemberian otomatis (mis. saat boost) menyusul di stage terkait |
+| Reputation, XP/Level display | implemented (read-only) | Nilainya masih 0 sampai stage Leveling/Komunitas menulis counter-nya — ini disengaja, bukan bug |
+
 ## Belum dikerjakan (menunggu checkpoint tahap berikutnya)
 
 Setiap modul berikut butuh command + business logic + (untuk beberapa) rendering
 canvas/PDF. Skema database untuk semua ini sudah ada di `src/database/models/`.
 
-- **Profil Member** — `/profile`, edit bio/social media/pronouns, badge & achievement display
 - **Leveling** — XP message/voice, rank card (canvas), leaderboard, role reward, prestige
 - **Komunitas** — daily/weekly reward, reputation, poll, suggestion, starboard, birthday, reminder, AFK, confession, temp voice, welcome/goodbye card, auto role, reaction role
 - **Tiket** — panel, claim/close/reopen, rating, transcript HTML/PDF
