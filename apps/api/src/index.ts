@@ -5,6 +5,7 @@ import { env } from "./config/env";
 import { logger } from "./lib/logger";
 import { connectRedis, disconnectRedis } from "./lib/redis";
 import { createSocketServer, startRealtimeRelay } from "./lib/socket";
+import { createAgentNamespace } from "./lib/agentSocket";
 
 async function main() {
   await connectRedis();
@@ -12,7 +13,8 @@ async function main() {
   const app = createApp();
   const httpServer = http.createServer(app);
 
-  createSocketServer(httpServer);
+  const io = createSocketServer(httpServer);
+  createAgentNamespace(io);
   await startRealtimeRelay();
 
   httpServer.listen(env.PORT, () => {

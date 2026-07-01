@@ -5,6 +5,7 @@ import { prisma } from "@nexusbot/database";
 import {
   ADMIN_ROOM,
   guildRoom,
+  instanceRoom,
   RealtimeEvent,
   type RealtimeEnvelope,
 } from "@nexusbot/shared";
@@ -91,6 +92,26 @@ export function createSocketServer(httpServer: HttpServer): SocketIOServer {
           where: { guildId_userId: { guildId, userId } },
         });
         if (isStaff) await socket.join(guildRoom(guildId));
+      });
+
+      socket.on("leave-guild", (guildId: string) => {
+        if (typeof guildId === "string" && guildId) void socket.leave(guildRoom(guildId));
+      });
+
+      // Bot Console: dashboard joins an instance's log/status room after
+      // verifying the caller actually owns that BotInstance.
+      socket.on("join-instance", async (instanceId: string) => {
+        if (typeof instanceId !== "string" || !instanceId) return;
+        if (role === "ADMIN" || role === "OWNER") {
+          await socket.join(instanceRoom(instanceId));
+          return;
+        }
+        const instance = await prisma.botInstance.findUnique({ where: { id: instanceId } });
+        if (instance && instance.ownerId === userId) await socket.join(instanceRoom(instanceId));
+      });
+
+      socket.on("leave-instance", (instanceId: string) => {
+        if (typeof instanceId === "string" && instanceId) void socket.leave(instanceRoom(instanceId));
       });
     } catch (err) {
       log.error({ err, userId }, "Failed to join rooms on socket connect");

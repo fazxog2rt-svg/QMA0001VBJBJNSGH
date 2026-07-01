@@ -32,6 +32,11 @@ export const DEFAULT_RATE_LIMIT_MAX = 120;
 export const JWT_ACCESS_TOKEN_TTL = "15m";
 export const JWT_REFRESH_TOKEN_TTL_DAYS = 30;
 
+export const AGENT_TOKEN_PREFIX = "nxa_";
+/** Agent is considered disconnected if no heartbeat arrives within this window. */
+export const AGENT_HEARTBEAT_TIMEOUT_MS = 45_000;
+export const AGENT_HEARTBEAT_INTERVAL_MS = 15_000;
+
 export const IDENTITY_CARD_THEMES = [
   "default",
   "aurora",

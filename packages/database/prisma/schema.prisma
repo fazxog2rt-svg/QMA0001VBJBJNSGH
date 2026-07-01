@@ -58,6 +58,7 @@ model User {
   referralsReceived Referral[]      @relation("ReferralInvitee")
   invoices          Invoice[]
   webhooks          Webhook[]
+  botInstances      BotInstance[]
   affiliateCode     String?         @unique
 
   @@map("users")
@@ -157,6 +158,7 @@ model Guild {
   identityCards     IdentityCard[]
   plugins           GuildPlugin[]
   backups           Backup[]
+  botInstances      BotInstance[]
 
   @@map("guilds")
 }
@@ -785,6 +787,47 @@ model Backup {
   createdAt DateTime @default(now())
 
   @@map("backups")
+}
+
+// ─────────────────────────────────────────────────────────────────────────
+// BOT PROCESS CONTROL (self-hosted bot instances)
+//
+// Lets a user run their OWN bot process on their OWN server and control it
+// (start/stop/restart + live log console) from the NexusBot dashboard. A
+// lightweight agent daemon (apps/agent) runs alongside their bot, connects
+// OUT to apps/api over Socket.IO (no inbound ports needed on their box), and
+// only ever executes the single start command configured locally in the
+// agent's own .env — the dashboard can trigger start/stop/restart signals
+// but can never inject arbitrary remote commands.
+// ─────────────────────────────────────────────────────────────────────────
+
+enum BotInstanceStatus {
+  OFFLINE // agent not connected
+  READY // agent connected, process not running
+  STARTING
+  ONLINE
+  STOPPING
+  CRASHED
+}
+
+model BotInstance {
+  id              String            @id @default(cuid())
+  ownerId         String
+  owner           User              @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  guildId         String?
+  guild           Guild?            @relation(fields: [guildId], references: [id])
+  name            String
+  tokenHash       String            @unique
+  status          BotInstanceStatus @default(OFFLINE)
+  pid             Int?
+  lastExitCode    Int?
+  lastConnectedAt DateTime?
+  lastHeartbeatAt DateTime?
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime          @updatedAt
+
+  @@map("bot_instances")
+  @@index([ownerId])
 }
 
 model FeatureFlag {

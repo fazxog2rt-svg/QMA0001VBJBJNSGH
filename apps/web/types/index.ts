@@ -344,3 +344,18 @@ export interface Coupon {
   redemptions: number;
   expiresAt?: string | null;
 }
+
+export type BotInstanceStatus = "OFFLINE" | "READY" | "STARTING" | "ONLINE" | "STOPPING" | "CRASHED";
+
+export interface BotInstance {
+  id: string;
+  name: string;
+  guildId?: string | null;
+  status: BotInstanceStatus;
+  pid?: number | null;
+  lastExitCode?: number | null;
+  lastConnectedAt?: string | null;
+  lastHeartbeatAt?: string | null;
+  createdAt: string;
+  agentConnected: boolean;
+}

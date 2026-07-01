@@ -48,6 +48,8 @@ apps/
   api/        Express + TypeScript REST API, Socket.IO realtime gateway,
               JWT/OAuth2/2FA auth, admin + analytics + premium endpoints
   web/        Next.js 14 dashboard — user panel, admin panel, analytics panel
+  agent/      Lightweight daemon you run next to YOUR OWN bot process so the
+              dashboard's Bot Console can start/stop/restart it and stream logs
 packages/
   database/   Prisma schema + generated client, shared by bot & api
   shared/     Cross-app TypeScript types, zod schemas, realtime event contract,
@@ -131,6 +133,32 @@ npm run build
 npm run db:migrate:deploy --workspace=@nexusbot/database
 pm2 start ecosystem.config.js
 ```
+
+## Bot Console — controlling a bot you already run yourself
+
+If you already have your own Discord bot running on your own server (not `apps/bot`), the
+dashboard's **Bot Console** (`/dashboard/bot-console`) can still give you start/stop/restart
+control and a live log stream for it, via `apps/agent` — a small daemon you run next to your
+existing bot:
+
+```
+apps/agent (on YOUR server, next to YOUR bot)
+   │ connects OUT over Socket.IO — no inbound ports needed on your box
+   ▼
+apps/api  `/agent` namespace — verifies the instance's agent token, tracks
+          BotInstance status/pid in Postgres, relays start/stop/restart
+          commands + live log lines between the agent and the dashboard
+   │ Socket.IO room `instance:<id>`
+   ▼
+apps/web  Bot Console page — Start/Stop/Restart buttons + terminal-style
+          live log viewer
+```
+
+Create an instance in **Bot Console → New Instance** to get a one-time agent token, then
+configure and run `apps/agent` next to your bot (see
+[`apps/agent/README.md`](apps/agent/README.md)). The agent only ever executes the single
+start command you configure locally in its own `.env` — the dashboard can send it
+start/stop/restart *signals*, never an arbitrary remote command.
 
 ## The plugin system
 

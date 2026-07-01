@@ -1,7 +1,7 @@
 import bcrypt from "bcryptjs";
 import crypto from "node:crypto";
 import { customAlphabet } from "nanoid";
-import { API_KEY_PREFIX } from "@nexusbot/shared";
+import { API_KEY_PREFIX, AGENT_TOKEN_PREFIX } from "@nexusbot/shared";
 
 const BCRYPT_COST = 12;
 
@@ -33,6 +33,16 @@ export function generateApiKey(): { plaintext: string; hash: string; prefix: str
 
 export function sha256(value: string): string {
   return crypto.createHash("sha256").update(value).digest("hex");
+}
+
+/**
+ * Generates a new bot-instance agent token. Returns the plaintext (shown
+ * once to the user, put into the agent's .env) plus the SHA-256 hash that
+ * is persisted to BotInstance.tokenHash. Never store or log the plaintext.
+ */
+export function generateAgentToken(): { plaintext: string; hash: string } {
+  const plaintext = `${AGENT_TOKEN_PREFIX}${nanoid()}`;
+  return { plaintext, hash: sha256(plaintext) };
 }
 
 /** Generates a set of one-time 2FA backup codes (plaintext, shown once). */

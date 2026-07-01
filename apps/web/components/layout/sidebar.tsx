@@ -22,6 +22,7 @@ import {
   ChevronsLeft,
   ChevronsRight,
   Bot,
+  TerminalSquare,
   X,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -39,15 +40,19 @@ export interface NavItem {
 const mainNav: NavItem[] = [
   { label: "Home", href: "/dashboard", icon: Home },
   { label: "Servers", href: "/dashboard/servers", icon: Server },
+  { label: "Bot Console", href: "/dashboard/bot-console", icon: TerminalSquare },
 ];
 
+// These tools are per-server (routes live under /dashboard/servers/[guildId]/...),
+// so the sidebar links to the server picker — pick a server to reach them,
+// same as clicking a server card and using its own tab navigation.
 const guildToolsNav: NavItem[] = [
-  { label: "Moderation", href: "/dashboard/moderation", icon: ShieldAlert },
-  { label: "Economy", href: "/dashboard/economy", icon: Coins },
-  { label: "Leveling", href: "/dashboard/leveling", icon: TrendingUp },
-  { label: "Tickets", href: "/dashboard/tickets", icon: Ticket },
-  { label: "Analytics", href: "/dashboard/analytics", icon: BarChart3 },
-  { label: "Identity Cards", href: "/dashboard/identity-cards", icon: IdCard },
+  { label: "Moderation", href: "/dashboard/servers", icon: ShieldAlert },
+  { label: "Economy", href: "/dashboard/servers", icon: Coins },
+  { label: "Leveling", href: "/dashboard/servers", icon: TrendingUp },
+  { label: "Tickets", href: "/dashboard/servers", icon: Ticket },
+  { label: "Analytics", href: "/dashboard/servers", icon: BarChart3 },
+  { label: "Identity Cards", href: "/dashboard/servers", icon: IdCard },
 ];
 
 const growthNav: NavItem[] = [

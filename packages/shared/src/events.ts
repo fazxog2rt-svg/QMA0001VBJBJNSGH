@@ -44,3 +44,49 @@ export function guildRoom(guildId: string): string {
 }
 
 export const ADMIN_ROOM = "admin:global";
+
+/**
+ * Bot process-control contract (apps/agent <-> apps/api <-> apps/web).
+ *
+ * Separate from the guild-events channel above because a BotInstance isn't
+ * always tied to a guild, and the payload shape (raw log lines, process
+ * status) is different from Discord activity events. Unlike apps/bot (a
+ * separate OS process that reaches the API only via Redis pub/sub), the
+ * agent connects directly to apps/api's own Socket.IO server over the
+ * `/agent` namespace, so both directions are a direct in-process relay
+ * (no Redis hop): agent emits `log`/`status` -> API re-emits into Socket.IO
+ * room `instance:<instanceId>` -> apps/web listens. Control flows the other
+ * way: apps/api emits a `command` event straight to the connected agent's
+ * socket.
+ */
+export enum ProcessEvent {
+  Log = "process.log",
+  StatusChanged = "process.status",
+}
+
+export interface ProcessEnvelope<T = unknown> {
+  event: ProcessEvent;
+  instanceId: string;
+  timestamp: string;
+  data: T;
+}
+
+export function instanceRoom(instanceId: string): string {
+  return `instance:${instanceId}`;
+}
+
+export type BotInstanceStatus = "OFFLINE" | "READY" | "STARTING" | "ONLINE" | "STOPPING" | "CRASHED";
+
+export interface ProcessLogPayload {
+  stream: "stdout" | "stderr" | "system";
+  line: string;
+}
+
+export interface ProcessStatusPayload {
+  status: BotInstanceStatus;
+  pid?: number | null;
+  exitCode?: number | null;
+}
+
+/** Commands the API sends to the agent over the `/agent` Socket.IO namespace. */
+export type AgentCommand = "start" | "stop" | "restart";

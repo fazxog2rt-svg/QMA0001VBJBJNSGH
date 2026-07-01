@@ -25,6 +25,7 @@ import premiumRouter from "./modules/premium/router";
 import webhooksRouter from "./modules/webhooks/router";
 import adminRouter, { guildBackupRouter } from "./modules/admin/router";
 import publicRouter from "./modules/public/router";
+import botInstancesRouter from "./modules/bot-instances/router";
 
 export function createApp(): Express {
   const app = express();
@@ -81,6 +82,7 @@ export function createApp(): Express {
   app.use("/api/v1/admin", adminRouter);
   app.use("/api/v1/guilds", guildBackupRouter);
   app.use("/api/v1/public", publicRouter);
+  app.use("/api/v1/bot-instances", botInstancesRouter);
 
   app.use(notFoundHandler);
   app.use(errorHandler);

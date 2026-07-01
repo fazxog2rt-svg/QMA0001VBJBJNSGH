@@ -57,6 +57,11 @@ async function request<T>(
       headers: {
         ...(options?.body !== undefined ? { "Content-Type": "application/json" } : {}),
         Accept: "application/json",
+        // Required by the API's CSRF guard on every state-changing request
+        // (see apps/api middleware/auth.ts csrfHeaderGuard) — cross-site
+        // <form>/<img> requests can't set custom headers, so this proves
+        // the request came from our own JS, not a forged cross-site one.
+        "X-Requested-With": "XMLHttpRequest",
         ...options?.headers,
       },
       body: options?.body !== undefined ? JSON.stringify(options.body) : undefined,

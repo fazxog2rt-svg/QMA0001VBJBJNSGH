@@ -10,6 +10,7 @@ Status legend: **Done** = real layout + real components + real `lib/api.ts` wiri
 | `/2fa` | TOTP 6-digit verification step (post-login MFA challenge) | Done |
 | `/dashboard` | Home — bot status (online/ping/cpu/ram), server/user counts, command usage chart, realtime activity feed, announcements panel | Done |
 | `/dashboard/servers` | Server picker grid — glass cards, icon, member count, premium tier badge, search filter | Done |
+| `/dashboard/bot-console` | Start/stop/restart your own self-hosted bot process + live log console, via the `apps/agent` daemon | Done |
 | `/dashboard/servers/[guildId]/overview` | Guild overview — member/message/voice/command stat cards, growth chart, realtime feed, server info | Done |
 | `/dashboard/servers/[guildId]/moderation` | Case table with action-type filter + "issue action" modal (warn/mute/timeout/kick/ban/etc.) | Done |
 | `/dashboard/servers/[guildId]/automod` | AutoMod rule toggles (anti-spam/raid/mention/link/invite/scam/phishing/token-grabber/captcha) | Done |
