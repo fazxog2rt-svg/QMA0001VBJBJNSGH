@@ -1,4 +1,5 @@
 export * from "./Member";
+export * from "./Counter";
 export * from "./IdentityCard";
 export * from "./GuildConfig";
 export * from "./ModerationCase";

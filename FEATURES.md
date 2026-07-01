@@ -28,12 +28,28 @@ Moderation → Security → AI → Economy → Events → Testing → Optimasi �
 | Database schema inti (Member, IdentityCard, GuildConfig, ModerationCase, Ticket, ReactionRole, Giveaway, Reminder, Birthday, Suggestion, Confession, StarboardPost, TempVoiceChannel, ShopItem, CommunityEvent, ActivityLog, VerificationAttempt) | implemented |
 | Command contoh: `/ping`, `/help` (pagination per kategori) | implemented |
 
+## Identitas Digital (KTP) — Stage 8 (selesai)
+
+| Feature | Status | Catatan |
+|---|---|---|
+| `/ktp buat` — wizard multi-step (modal → modal → select×3 → confirm) | implemented | Draft disimpan di Redis (`ktpSession.ts`, TTL 15 menit) selama pengisian |
+| Validasi NIK (16 digit), tanggal lahir (DD-MM-YYYY, kalender valid, tidak di masa depan), kode pos (5 digit) | implemented | `ktpValidation.ts` |
+| Nomor identitas unik otomatis (`KTP-<tahun>-<8 digit>`) | implemented | Counter atomik (`Counter.ts`, `$inc` findOneAndUpdate — aman dari race condition) |
+| Upload foto opsional via slash command attachment, fallback ke avatar Discord | implemented | |
+| Generate kartu PNG (canvas premium, badge status berwarna, disclaimer non-resmi) | implemented | `ktpCardRenderer.ts` — diverifikasi visual, ada fallback foto abu-abu jika load gambar gagal |
+| QR verification + barcode Code128 | implemented | `ktpCodeRenderer.ts` (qrcode + bwip-js) |
+| Generate PDF (A4, tidak ada elemen overlap — diverifikasi visual) | implemented | `ktpPdfRenderer.ts` |
+| Riwayat perubahan data (`/ktp riwayat`, paginated) | implemented | |
+| Verifikasi/tolak oleh admin (`/ktp verifikasi`, `/ktp tolak`, permission Manage Server, DM notifikasi best-effort) | implemented | |
+| Masa berlaku (2 tahun sejak diterbitkan/diperbarui) | implemented | |
+| Kewarganegaraan | simplified | Default "WNI" (tidak ada input UI) — modal Discord dibatasi 5 field × 2 modal sudah terisi penuh oleh 10 field lain. Bisa ditambahkan sebagai select menu ke-4 di iterasi berikutnya jika dibutuhkan. |
+| Privasi | by design | `/ktp lihat` untuk user lain dibatasi ke admin (Manage Server) saja — data berbentuk NIK/alamat tidak ditampilkan bebas ke publik meski datanya fiktif/community-only. |
+
 ## Belum dikerjakan (menunggu checkpoint tahap berikutnya)
 
 Setiap modul berikut butuh command + business logic + (untuk beberapa) rendering
 canvas/PDF. Skema database untuk semua ini sudah ada di `src/database/models/`.
 
-- **Identitas Digital (KTP)** — `/ktp buat`, `/ktp lihat`, verifikasi admin, generate PNG/PDF, QR code
 - **Profil Member** — `/profile`, edit bio/social media/pronouns, badge & achievement display
 - **Leveling** — XP message/voice, rank card (canvas), leaderboard, role reward, prestige
 - **Komunitas** — daily/weekly reward, reputation, poll, suggestion, starboard, birthday, reminder, AFK, confession, temp voice, welcome/goodbye card, auto role, reaction role
