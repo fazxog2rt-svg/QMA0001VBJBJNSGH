@@ -5,6 +5,7 @@ import { loadCommands } from "./handlers/commandHandler";
 import { loadComponents } from "./handlers/componentHandler";
 import { loadContextMenuCommands } from "./handlers/contextMenuHandler";
 import { loadEvents } from "./handlers/eventHandler";
+import { registerCommands } from "./handlers/registerCommands";
 import { connectRedis, disconnectRedis } from "./services/redis.service";
 import { logger } from "./services/logger.service";
 import { startScheduler } from "./services/scheduler/cronJobs";
@@ -34,6 +35,19 @@ async function bootstrap(): Promise<void> {
   await loadComponents(client);
 
   await client.login(env.DISCORD_TOKEN);
+
+  // Panel hosting tanpa akses terminal bisa mendaftarkan slash command dengan
+  // menyetel AUTO_DEPLOY_COMMANDS=true. Gagal deploy tidak mematikan bot.
+  if (env.AUTO_DEPLOY_COMMANDS) {
+    try {
+      await registerCommands();
+    } catch (error) {
+      logger.error("Auto-deploy command gagal", {
+        error: error instanceof Error ? error.message : error,
+      });
+    }
+  }
+
   startScheduler(client);
 
   const shutdown = async (signal: string): Promise<void> => {

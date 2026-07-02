@@ -10,6 +10,13 @@ const envSchema = z.object({
   DISCORD_TOKEN: z.string().min(1, "DISCORD_TOKEN wajib diisi"),
   DISCORD_CLIENT_ID: z.string().min(1, "DISCORD_CLIENT_ID wajib diisi"),
   DISCORD_DEV_GUILD_ID: z.string().optional(),
+  // Jika "true", bot akan otomatis mendaftarkan (deploy) semua slash/context-menu
+  // command ke Discord saat startup. Berguna untuk panel hosting yang tidak
+  // memberi akses terminal untuk menjalankan `npm run deploy-commands`.
+  AUTO_DEPLOY_COMMANDS: z
+    .string()
+    .optional()
+    .transform((value) => value === "true" || value === "1"),
   OWNER_IDS: z
     .string()
     .default("")
