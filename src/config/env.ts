@@ -1,6 +1,11 @@
+import path from "node:path";
 import { config } from "dotenv";
 import { z } from "zod";
 
+// Muat .env dari root proyek (dua tingkat di atas dist/config atau src/config),
+// bukan dari current working directory — supaya tetap ketemu di panel hosting
+// yang menjalankan bot dari direktori kerja berbeda. Fallback ke cwd juga dicoba.
+config({ path: path.resolve(__dirname, "../../.env") });
 config();
 
 const envSchema = z.object({
