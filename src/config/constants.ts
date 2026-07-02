@@ -145,6 +145,7 @@ export const COMMAND_CATEGORIES = [
   { key: "utility", label: "Utilitas", emoji: "🧰" },
   { key: "ai", label: "AI", emoji: "🤖" },
   { key: "fun", label: "Hiburan", emoji: "🎲" },
+  { key: "music", label: "Musik", emoji: "🎵" },
   { key: "economy", label: "Ekonomi", emoji: "💰" },
   { key: "events", label: "Event", emoji: "📅" },
   { key: "admin", label: "Admin", emoji: "⚙️" },
