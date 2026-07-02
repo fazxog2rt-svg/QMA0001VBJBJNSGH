@@ -13,7 +13,18 @@ import { initLocales } from "./utils/locale";
 async function bootstrap(): Promise<void> {
   await initLocales();
   await connectDatabase();
-  await connectRedis();
+
+  // Redis adalah optimasi (cache + sesi KTP), bukan dependensi kritis. Jika gagal
+  // konek — misalnya REDIS_URL salah/tanpa TLS — bot tetap jalan dengan cache mati
+  // dan fallback aman ke database, alih-alih crash total saat startup.
+  try {
+    await connectRedis();
+  } catch (error) {
+    logger.warn(
+      "Redis gagal terkoneksi — bot lanjut tanpa cache. Untuk Upstash pastikan REDIS_URL memakai skema TLS 'rediss://'.",
+      { error: error instanceof Error ? error.message : error },
+    );
+  }
 
   const client = new BotClient();
 
