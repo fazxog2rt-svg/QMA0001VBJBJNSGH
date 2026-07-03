@@ -35,9 +35,15 @@ const command: SlashCommand = {
         voiceChannel,
         interaction.channel as GuildTextBasedChannel,
       );
-    } catch {
+    } catch (error) {
+      const detail = error instanceof Error ? error.message : "timeout";
       await interaction.editReply({
-        embeds: [errorEmbed("Gagal terhubung ke voice channel. Coba lagi.")],
+        embeds: [
+          errorEmbed(
+            `Gagal terhubung ke voice channel: ${detail}. ` +
+              "Jika ini timeout, kemungkinan hosting memblokir koneksi UDP untuk voice.",
+          ),
+        ],
       });
       return;
     }

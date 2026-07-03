@@ -5,6 +5,7 @@ import {
   createAudioPlayer,
   createAudioResource,
   entersState,
+  generateDependencyReport,
   joinVoiceChannel,
   type AudioPlayer,
   type VoiceConnection,
@@ -192,10 +193,17 @@ export async function createQueue(
   });
 
   try {
-    await entersState(connection, VoiceConnectionStatus.Ready, 20_000);
+    await entersState(connection, VoiceConnectionStatus.Ready, 30_000);
   } catch (error) {
+    // Log detail + laporan dependency (opus & enkripsi) untuk membedakan masalah
+    // library (bisa diperbaiki dari kode) vs. UDP diblokir hosting (tidak bisa).
+    logger.error("Gagal menyiapkan koneksi suara (Ready timeout)", {
+      guildId: guild.id,
+      error: error instanceof Error ? error.message : error,
+    });
+    logger.error(`Voice dependency report:\n${generateDependencyReport()}`);
     connection.destroy();
-    throw error;
+    throw error instanceof Error ? error : new Error("Voice connection timeout");
   }
 
   const queue = new GuildMusicQueue(guild.id, voiceChannel.id, connection, textChannel, (guildId) =>
