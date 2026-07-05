@@ -1,6 +1,7 @@
 import type { Message } from "discord.js";
 import { awardMessageXp, handleLevelUpSideEffects } from "../services/leveling/levelingService";
 import { clearAfkIfNeeded, getAfkMentionInfo } from "../services/community/afkService";
+import { handleAiChannelMessage } from "../services/ai/aiChannelService";
 import { runAutoMod } from "../services/security/autoModService";
 import { logger } from "../services/logger.service";
 import type { BotEvent } from "../types/event";
@@ -36,6 +37,14 @@ const event: BotEvent<"messageCreate"> = {
     try {
       const wasRemoved = await runAutoMod(message);
       if (wasRemoved) return;
+
+      // Auto-reply AI: kalau channel ini terdaftar, balas otomatis lalu tetap
+      // lanjut memberi XP (tidak return supaya chat di channel AI tetap dapat XP).
+      await handleAiChannelMessage(message).catch((error: unknown) => {
+        logger.error("Gagal auto-reply AI channel", {
+          error: error instanceof Error ? error.message : error,
+        });
+      });
 
       await handleAfk(message);
 

@@ -106,7 +106,7 @@ pm2 start ecosystem.config.js
 | `npm run typecheck` | `tsc --noEmit` |
 | `npm test` / `test:watch` | Vitest |
 
-## Daftar Command (93 slash + 1 context menu)
+## Daftar Command (94 slash + 1 context menu)
 
 Semua konfigurasi dilakukan lewat command Discord — tidak ada web dashboard.
 
@@ -120,7 +120,7 @@ Semua konfigurasi dilakukan lewat command Discord — tidak ada web dashboard.
 | 🔨 Moderasi | `/warn`, `/mute`·`/unmute`, `/timeout`·`/untimeout`, `/kick`, `/ban`·`/unban`, `/tempban`, `/softban`, `/purge`, `/lockdown`·`/unlock`, `/slowmode`, `/nickname-filter`, `/case` |
 | 🛡️ Keamanan | `/security-config`, `/auditlog`, `/role-backup` (+ automod, anti-raid, anti-nuke, captcha otomatis) |
 | 🧰 Utilitas | `/qr`, `/password`, `/uuid`, `/timestamp`, `/calc`, `/json-format`, `/color`, `/embed-builder`, `/announce`, `/help`, `/ping` |
-| 🤖 AI (OpenRouter) | `/ai-chat`, `/ai-translate`, `/ai-summarize`, `/ai-code`, `/ai-grammar`, `/ai-prompt`, `/ai-moderate`, `/ai-faq`, `/faq`, `/ai-toggle`, context menu "Jelaskan Kode Ini" |
+| 🤖 AI (OpenRouter) | `/ai-chat`, `/ai-translate`, `/ai-summarize`, `/ai-code`, `/ai-grammar`, `/ai-prompt`, `/ai-moderate`, `/ai-faq`, `/faq`, `/ai-toggle`, `/ai-channel` (auto-reply per channel: persona + model), context menu "Jelaskan Kode Ini" |
 | 🎲 Hiburan | `/coinflip`, `/dice`, `/8ball`, `/tod`, `/meme`, `/trivia`, `/daily-quest` |
 | 🎵 Musik | `/play`, `/skip`, `/stop`, `/pause`, `/resume`, `/queue`, `/nowplaying`, `/loop`, `/volume`, `/shuffle` |
 | 💰 Ekonomi | `/balance`, `/bank`, `/transfer`, `/weekly`, `/work`, `/shop`, `/buy`, `/inventory`, `/rich`, `/shop-admin` |

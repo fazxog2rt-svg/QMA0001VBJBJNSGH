@@ -109,6 +109,24 @@ const guildConfigSchema = new Schema(
 
     aiAssistantEnabled: { type: Boolean, default: false },
 
+    // Channel-channel yang auto-dibalas AI. Tiap channel punya persona (gaya
+    // bahasa) & model OpenRouter sendiri, dikonfigurasi lewat /ai-channel.
+    aiChannels: {
+      type: [
+        new Schema(
+          {
+            channelId: { type: String, required: true },
+            persona: { type: String, default: "ramah" },
+            model: { type: String, default: "openai/gpt-4o-mini" },
+            customInstruction: { type: String, default: "" },
+            enabled: { type: Boolean, default: true },
+          },
+          { _id: false },
+        ),
+      ],
+      default: [],
+    },
+
     tempVoice: {
       enabled: { type: Boolean, default: false },
       hubChannelId: { type: String },
