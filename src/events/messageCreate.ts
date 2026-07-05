@@ -2,6 +2,8 @@ import type { Message } from "discord.js";
 import { awardMessageXp, handleLevelUpSideEffects } from "../services/leveling/levelingService";
 import { clearAfkIfNeeded, getAfkMentionInfo } from "../services/community/afkService";
 import { handleAiChannelMessage } from "../services/ai/aiChannelService";
+import { handleCountingMessage } from "../services/community/countingService";
+import { handleStickyMessage } from "../services/community/stickyService";
 import { runAutoMod } from "../services/security/autoModService";
 import { logger } from "../services/logger.service";
 import type { BotEvent } from "../types/event";
@@ -38,10 +40,36 @@ const event: BotEvent<"messageCreate"> = {
       const wasRemoved = await runAutoMod(message);
       if (wasRemoved) return;
 
+      // Counting channel: validasi angka berurutan. Channel ini khusus, jadi
+      // hentikan proses lain (XP/sticky/AI) untuk pesannya.
+      const counting = await handleCountingMessage(message);
+      if (counting.handled) {
+        if (counting.correct) {
+          await message.react("✅").catch(() => undefined);
+        } else {
+          await message.react("❌").catch(() => undefined);
+          const reason =
+            counting.reason === "double-count"
+              ? "tidak boleh menghitung dua kali berturut-turut"
+              : `angka salah (harusnya **${counting.expected}**)`;
+          await message.channel
+            .send(`❌ ${message.author} ${reason}! Hitungan direset. Mulai lagi dari **1**.`)
+            .catch(() => undefined);
+        }
+        return;
+      }
+
       // Auto-reply AI: kalau channel ini terdaftar, balas otomatis lalu tetap
       // lanjut memberi XP (tidak return supaya chat di channel AI tetap dapat XP).
       await handleAiChannelMessage(message).catch((error: unknown) => {
         logger.error("Gagal auto-reply AI channel", {
+          error: error instanceof Error ? error.message : error,
+        });
+      });
+
+      // Sticky message: repost pesan tersemat ke bawah (dengan debounce).
+      await handleStickyMessage(message).catch((error: unknown) => {
+        logger.error("Gagal memproses sticky message", {
           error: error instanceof Error ? error.message : error,
         });
       });

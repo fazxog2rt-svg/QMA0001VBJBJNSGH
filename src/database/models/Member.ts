@@ -70,6 +70,14 @@ const memberSchema = new Schema(
     ticketsClaimed: { type: Number, default: 0 },
     aiUsageCount: { type: Number, default: 0 },
 
+    // Job system (mempengaruhi payout /work)
+    jobKey: { type: String },
+    // Cooldown aksi "rob"
+    lastRobAt: { type: Date },
+    // Marriage
+    partnerId: { type: String },
+    marriedAt: { type: Date },
+
     // Economy
     walletBalance: { type: Number, default: 0, min: 0 },
     bankBalance: { type: Number, default: 0, min: 0 },

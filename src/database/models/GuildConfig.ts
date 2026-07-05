@@ -137,6 +137,17 @@ const guildConfigSchema = new Schema(
       channelId: { type: String },
     },
 
+    // Channel tujuan laporan member (/report)
+    reportChannelId: { type: String },
+
+    // Counting game: member menghitung berurutan di satu channel
+    counting: {
+      channelId: { type: String },
+      current: { type: Number, default: 0 },
+      lastUserId: { type: String },
+      highScore: { type: Number, default: 0 },
+    },
+
     confession: {
       channelId: { type: String },
       nextConfessionNumber: { type: Number, default: 1 },

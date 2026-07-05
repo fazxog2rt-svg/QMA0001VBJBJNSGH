@@ -2,6 +2,7 @@ import { SlashCommandBuilder } from "discord.js";
 import type { SlashCommand } from "../../types/command";
 import { getOrCreateMember } from "../../services/profile/profileService";
 import { getCurrencySymbol } from "../../services/economy/economyService";
+import { getJob } from "../../config/jobs";
 import { buildEmbed, errorEmbed } from "../../utils/embed";
 
 const WORK_COOLDOWN_MS = 60 * 60 * 1000;
@@ -45,8 +46,15 @@ const command: SlashCommand = {
       return;
     }
 
-    const earned = Math.floor(Math.random() * (WORK_MAX - WORK_MIN + 1)) + WORK_MIN;
-    const message = WORK_MESSAGES[Math.floor(Math.random() * WORK_MESSAGES.length)]!;
+    // Jika member punya pekerjaan, pakai rentang gaji pekerjaan itu.
+    const job = getJob(member.jobKey);
+    const min = job?.min ?? WORK_MIN;
+    const max = job?.max ?? WORK_MAX;
+
+    const earned = Math.floor(Math.random() * (max - min + 1)) + min;
+    const message = job
+      ? `${job.emoji} Kamu bekerja sebagai **${job.label}** dan dapat`
+      : WORK_MESSAGES[Math.floor(Math.random() * WORK_MESSAGES.length)]!;
 
     member.walletBalance += earned;
     member.lastWorkAt = new Date();

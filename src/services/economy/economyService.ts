@@ -12,6 +12,42 @@ export async function getCurrencySymbol(guildId: string): Promise<string> {
   return guildConfig?.economy?.currencySymbol ?? "🪙";
 }
 
+export interface WalletAdjustResult {
+  success: boolean;
+  balance?: number;
+  error?: string;
+}
+
+/**
+ * Ubah saldo wallet secara atomik. `amount` boleh negatif untuk mengurangi;
+ * pengurangan bersifat bersyarat sehingga saldo tidak pernah minus (aman dari
+ * race condition — dipakai gambling, rob, dsb.).
+ */
+export async function adjustWallet(
+  guildId: string,
+  userId: string,
+  amount: number,
+): Promise<WalletAdjustResult> {
+  await getOrCreateMember(guildId, userId);
+
+  if (amount < 0) {
+    const debited = await Member.findOneAndUpdate(
+      { guildId, userId, walletBalance: { $gte: -amount } },
+      { $inc: { walletBalance: amount } },
+      { new: true },
+    );
+    if (!debited) return { success: false, error: "Saldo wallet tidak cukup." };
+    return { success: true, balance: debited.walletBalance };
+  }
+
+  const credited = await Member.findOneAndUpdate(
+    { guildId, userId },
+    { $inc: { walletBalance: amount } },
+    { new: true },
+  );
+  return { success: true, balance: credited?.walletBalance ?? 0 };
+}
+
 export interface WeeklyClaimResult {
   claimed: boolean;
   amount: number;
