@@ -43,6 +43,10 @@ const envSchema = z.object({
 
   KTP_ISSUER_NAME: z.string().default("Dukcapil Komunitas"),
   KTP_CARD_STORAGE_PATH: z.string().default("./storage/identity-cards"),
+
+  // Cookie akun YouTube (opsional) agar play-dl lolos "Sign in to confirm you're
+  // not a bot" saat bot berjalan dari IP server/datacenter.
+  YOUTUBE_COOKIE: z.string().optional(),
 });
 
 const parsed = envSchema.safeParse(process.env);

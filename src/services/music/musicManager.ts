@@ -12,8 +12,28 @@ import {
 } from "@discordjs/voice";
 import play from "play-dl";
 import type { Guild, GuildTextBasedChannel, VoiceBasedChannel } from "discord.js";
+import { env } from "../../config/env";
 import { logger } from "../logger.service";
 import type { LoopMode, Track } from "./types";
+
+// Set cookie YouTube sekali (jika ada) agar play-dl tidak diblokir dari IP server.
+let ytTokenReady: Promise<void> | null = null;
+function ensureYoutubeToken(): Promise<void> {
+  if (!ytTokenReady) {
+    ytTokenReady = (async () => {
+      if (!env.YOUTUBE_COOKIE) return;
+      try {
+        await play.setToken({ youtube: { cookie: env.YOUTUBE_COOKIE } });
+        logger.info("Cookie YouTube dimuat untuk play-dl.");
+      } catch (error) {
+        logger.warn("Gagal memuat cookie YouTube", {
+          error: error instanceof Error ? error.message : error,
+        });
+      }
+    })();
+  }
+  return ytTokenReady;
+}
 
 /**
  * Antrean musik per-guild: memegang koneksi suara, audio player, daftar lagu,
@@ -219,6 +239,7 @@ export async function resolveTrack(
   requestedById: string,
   requestedByTag: string,
 ): Promise<Track | null> {
+  await ensureYoutubeToken();
   const isUrl = play.yt_validate(query) === "video";
   const results = isUrl
     ? [(await play.video_basic_info(query)).video_details]
