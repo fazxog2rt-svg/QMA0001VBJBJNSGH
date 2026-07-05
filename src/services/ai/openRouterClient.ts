@@ -53,21 +53,31 @@ export async function requestAiChatCompletion(
     };
   }
 
-  try {
-    const response = await limiter.schedule(() =>
-      getClient().chat.completions.create({
-        model: options.model ?? env.OPENROUTER_MODEL,
-        messages,
-        max_tokens: options.maxTokens ?? 500,
-      }),
-    );
+  const requestedModel = options.model ?? env.OPENROUTER_MODEL;
+  const maxTokens = options.maxTokens ?? 500;
 
-    const content = response.choices[0]?.message?.content;
-    if (!content) {
-      return { ok: false, error: "AI tidak memberikan respons. Coba lagi." };
-    }
+  const call = async (model: string): Promise<string | null> => {
+    const response = await limiter.schedule(() =>
+      getClient().chat.completions.create({ model, messages, max_tokens: maxTokens }),
+    );
+    return response.choices[0]?.message?.content ?? null;
+  };
+
+  try {
+    const content = await call(requestedModel);
+    if (!content) return { ok: false, error: "AI tidak memberikan respons. Coba lagi." };
     return { ok: true, content };
   } catch (error) {
+    // Jaring pengaman: jika model kustom gagal (mis. slug tidak valid / 404),
+    // coba sekali lagi dengan model default agar channel AI tetap membalas.
+    if (requestedModel !== env.OPENROUTER_MODEL) {
+      try {
+        const content = await call(env.OPENROUTER_MODEL);
+        if (content) return { ok: true, content };
+      } catch {
+        // biarkan jatuh ke pesan error di bawah
+      }
+    }
     return {
       ok: false,
       error: `Gagal menghubungi layanan AI: ${error instanceof Error ? error.message : "kesalahan tidak diketahui"}.`,

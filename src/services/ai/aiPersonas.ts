@@ -57,7 +57,7 @@ export const AI_MODELS = [
   { name: "GPT-4o — pintar", value: "openai/gpt-4o" },
   { name: "Claude 3.5 Haiku — cepat", value: "anthropic/claude-3.5-haiku" },
   { name: "Claude 3.5 Sonnet — pintar", value: "anthropic/claude-3.5-sonnet" },
-  { name: "Gemini Flash 1.5 — cepat", value: "google/gemini-flash-1.5" },
+  { name: "Gemini 2.0 Flash — cepat", value: "google/gemini-2.0-flash-001" },
   { name: "Llama 3.3 70B", value: "meta-llama/llama-3.3-70b-instruct" },
   { name: "Mistral Nemo", value: "mistralai/mistral-nemo" },
   { name: "DeepSeek V3", value: "deepseek/deepseek-chat" },
