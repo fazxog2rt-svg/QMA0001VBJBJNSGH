@@ -78,7 +78,23 @@ const command: SlashCommand = {
 
       await interaction.deferReply();
       const query = interaction.options.getString("lagu", true);
-      const track = await resolveTrack(query, interaction.user.id, interaction.user.tag);
+
+      let track;
+      try {
+        track = await resolveTrack(query, interaction.user.id, interaction.user.tag);
+      } catch (error) {
+        const detail = error instanceof Error ? error.message : "error tidak diketahui";
+        await interaction.editReply({
+          embeds: [
+            errorEmbed(
+              `Gagal mencari lagu di YouTube: ${detail}. ` +
+                "Kemungkinan YouTube memblokir pencarian dari IP server ini.",
+            ),
+          ],
+        });
+        return;
+      }
+
       if (!track) {
         await interaction.editReply({
           embeds: [errorEmbed(`Tidak ada hasil untuk **${query}**.`)],
