@@ -106,7 +106,7 @@ pm2 start ecosystem.config.js
 | `npm run typecheck` | `tsc --noEmit` |
 | `npm test` / `test:watch` | Vitest |
 
-## Daftar Command (108 slash + 1 context menu)
+## Daftar Command (97 slash + 1 context menu)
 
 Semua konfigurasi dilakukan lewat command Discord — tidak ada web dashboard.
 
@@ -115,14 +115,14 @@ Semua konfigurasi dilakukan lewat command Discord — tidak ada web dashboard.
 | 🪪 Identitas Digital (KTP) | `/ktp buat·lihat·riwayat·verifikasi·tolak` |
 | 👤 Profil Member | `/profile lihat·edit·achievements`, `/badge beri·cabut` |
 | 📈 Leveling | `/rank`, `/leaderboard`, `/level-role`, `/prestige`, `/xp beri` |
-| 🎉 Komunitas | `/daily`, `/reputasi`, `/poll`, `/suggest`, `/starboard`, `/birthday`, `/remind`, `/afk`, `/confess`, `/anon`, `/tempvoice`, `/welcome`, `/autorole`, `/reactionrole`, `/counting`, `/sticky`, `/marry`, `/divorce`, `/marriage` |
+| 🎉 Komunitas | `/daily`, `/reputasi`, `/poll`, `/suggest`, `/starboard`, `/birthday`, `/remind`, `/afk`, `/confess`, `/anon`, `/tempvoice`, `/welcome`, `/autorole`, `/reactionrole`, `/counting`, `/sticky`, `/marriage lamar·cerai·status` |
 | 🎫 Tiket | `/ticket-panel`, `/ticket-config` (+ tombol claim/close/reopen/delete & rating) |
 | 🔨 Moderasi | `/warn`, `/mute`·`/unmute`, `/timeout`·`/untimeout`, `/kick`, `/ban`·`/unban`, `/tempban`, `/softban`, `/purge`, `/lockdown`·`/unlock`, `/slowmode`, `/nickname-filter`, `/case`, `/report`, `/report-channel` |
 | 🛡️ Keamanan | `/security-config`, `/auditlog`, `/role-backup`, `/verification` (gerbang tombol) (+ automod, anti-raid, anti-nuke, captcha otomatis) |
 | 🧰 Utilitas | `/qr`, `/password`, `/uuid`, `/timestamp`, `/calc`, `/json-format`, `/color`, `/embed-builder`, `/announce`, `/help`, `/ping` |
 | 🤖 AI (OpenRouter) | `/ai-chat`, `/ai-translate`, `/ai-summarize`, `/ai-code`, `/ai-grammar`, `/ai-prompt`, `/ai-moderate`, `/ai-faq`, `/faq`, `/ai-toggle`, `/ai-channel` (auto-reply per channel: persona + model), context menu "Jelaskan Kode Ini" |
 | 🎲 Hiburan | `/coinflip`, `/dice`, `/8ball`, `/tod`, `/meme`, `/trivia`, `/daily-quest`, `/tebak-angka`, `/suit` |
-| 🎵 Musik | `/play`, `/skip`, `/stop`, `/pause`, `/resume`, `/queue`, `/nowplaying`, `/loop`, `/volume`, `/shuffle` |
+| 🎵 Musik | `/music play·skip·stop·pause·resume·queue·nowplaying·loop·volume·shuffle` |
 | 💰 Ekonomi | `/balance`, `/bank`, `/transfer`, `/weekly`, `/work`, `/shop`, `/buy`, `/inventory`, `/rich`, `/shop-admin`, `/job`, `/slot`, `/gamble`, `/rob` |
 | 📅 Event | `/event buat·selesai·list`, `/giveaway mulai·akhiri` |
 
