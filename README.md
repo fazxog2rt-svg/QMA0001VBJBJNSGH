@@ -106,7 +106,7 @@ pm2 start ecosystem.config.js
 | `npm run typecheck` | `tsc --noEmit` |
 | `npm test` / `test:watch` | Vitest |
 
-## Daftar Command (97 slash + 1 context menu)
+## Daftar Command (96 slash + 1 context menu)
 
 Semua konfigurasi dilakukan lewat command Discord — tidak ada web dashboard.
 
@@ -122,7 +122,6 @@ Semua konfigurasi dilakukan lewat command Discord — tidak ada web dashboard.
 | 🧰 Utilitas | `/qr`, `/password`, `/uuid`, `/timestamp`, `/calc`, `/json-format`, `/color`, `/embed-builder`, `/announce`, `/help`, `/ping` |
 | 🤖 AI (OpenRouter) | `/ai-chat`, `/ai-translate`, `/ai-summarize`, `/ai-code`, `/ai-grammar`, `/ai-prompt`, `/ai-moderate`, `/ai-faq`, `/faq`, `/ai-toggle`, `/ai-channel` (auto-reply per channel: persona + model), context menu "Jelaskan Kode Ini" |
 | 🎲 Hiburan | `/coinflip`, `/dice`, `/8ball`, `/tod`, `/meme`, `/trivia`, `/daily-quest`, `/tebak-angka`, `/suit` |
-| 🎵 Musik | `/music play·skip·stop·pause·resume·queue·nowplaying·loop·volume·shuffle` |
 | 💰 Ekonomi | `/balance`, `/bank`, `/transfer`, `/weekly`, `/work`, `/shop`, `/buy`, `/inventory`, `/rich`, `/shop-admin`, `/job`, `/slot`, `/gamble`, `/rob` |
 | 📅 Event | `/event buat·selesai·list`, `/giveaway mulai·akhiri` |
 
