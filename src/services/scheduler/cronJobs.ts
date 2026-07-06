@@ -6,6 +6,8 @@ import { GuildConfig } from "../../database/models/GuildConfig";
 import { ModerationCase } from "../../database/models/ModerationCase";
 import { CommunityEvent } from "../../database/models/CommunityEvent";
 import { processDueGiveaways } from "../events/giveawayService";
+import { runDailyMotivations } from "../community/motivationService";
+import { runDueTrials } from "../moderation/trialService";
 import { buildEmbed } from "../../utils/embed";
 import { logger } from "../logger.service";
 
@@ -155,6 +157,16 @@ export function startScheduler(client: BotClient): void {
   cron.schedule("* * * * *", () => {
     processDueReminders(client).catch((error) => {
       logger.error("Gagal memproses reminder terjadwal", {
+        error: error instanceof Error ? error.message : error,
+      });
+    });
+    runDailyMotivations(client).catch((error) => {
+      logger.error("Gagal memproses motivasi harian", {
+        error: error instanceof Error ? error.message : error,
+      });
+    });
+    runDueTrials(client).catch((error) => {
+      logger.error("Gagal memproses sidang terjadwal", {
         error: error instanceof Error ? error.message : error,
       });
     });

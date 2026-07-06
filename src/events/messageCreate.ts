@@ -2,6 +2,7 @@ import type { Message } from "discord.js";
 import { awardMessageXp, handleLevelUpSideEffects } from "../services/leveling/levelingService";
 import { clearAfkIfNeeded, getAfkMentionInfo } from "../services/community/afkService";
 import { handleAiChannelMessage } from "../services/ai/aiChannelService";
+import { handleAutoResponder } from "../services/community/autoResponderService";
 import { handleCountingMessage } from "../services/community/countingService";
 import { handleStickyMessage } from "../services/community/stickyService";
 import { runAutoMod } from "../services/security/autoModService";
@@ -63,6 +64,13 @@ const event: BotEvent<"messageCreate"> = {
       // lanjut memberi XP (tidak return supaya chat di channel AI tetap dapat XP).
       await handleAiChannelMessage(message).catch((error: unknown) => {
         logger.error("Gagal auto-reply AI channel", {
+          error: error instanceof Error ? error.message : error,
+        });
+      });
+
+      // Auto-responder: balas otomatis untuk trigger tertentu.
+      await handleAutoResponder(message).catch((error: unknown) => {
+        logger.error("Gagal memproses auto-responder", {
           error: error instanceof Error ? error.message : error,
         });
       });
