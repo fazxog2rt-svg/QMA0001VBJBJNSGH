@@ -40,43 +40,17 @@ export async function postMotivation(
   const cfg = MOTIVATION_CATEGORIES[category];
 
   await channel.send({
-    embeds: [buildEmbed("primary").setTitle(`${cfg.emoji} Motivasi Hari Ini`).setDescription(text)],
+    embeds: [buildEmbed("primary").setTitle(`${cfg.emoji} Motivasi`).setDescription(text)],
   });
   return true;
 }
 
-// Menit target harian yang "acak tapi tetap" per guild+tanggal, biar tidak selalu
-// tepat menit 0 (terasa lebih alami, bukan bot yang kaku).
-function targetMinute(seed: string): number {
-  let h = 0;
-  for (let i = 0; i < seed.length; i++) h = (h * 31 + seed.charCodeAt(i)) & 0xffff;
-  return h % 50;
-}
-
-function jakartaNow(): { dateStr: string; hour: number; minute: number } {
-  const parts = new Intl.DateTimeFormat("en-CA", {
-    timeZone: "Asia/Jakarta",
-    year: "numeric",
-    month: "2-digit",
-    day: "2-digit",
-    hour: "2-digit",
-    minute: "2-digit",
-    hour12: false,
-  }).formatToParts(new Date());
-  const get = (t: string) => parts.find((p) => p.type === t)?.value ?? "0";
-  return {
-    dateStr: `${get("year")}-${get("month")}-${get("day")}`,
-    hour: Number(get("hour")),
-    minute: Number(get("minute")),
-  };
-}
-
 /**
  * Dipanggil tiap menit oleh scheduler. Untuk tiap guild yang mengaktifkan motivasi,
- * kirim sekali sehari saat jam yang ditentukan (dengan offset menit acak).
+ * kirim setiap `intervalHours` jam (mis. 1 jam sekali) berdasarkan waktu terakhir kirim.
  */
-export async function runDailyMotivations(client: BotClient): Promise<void> {
-  const { dateStr, hour, minute } = jakartaNow();
+export async function runScheduledMotivations(client: BotClient): Promise<void> {
+  const now = Date.now();
 
   const configs = await GuildConfig.find({
     "motivation.enabled": true,
@@ -86,9 +60,10 @@ export async function runDailyMotivations(client: BotClient): Promise<void> {
   for (const config of configs) {
     const m = config.motivation;
     if (!m?.channelId) continue;
-    if (m.lastPostedDate === dateStr) continue; // sudah hari ini
-    if (hour !== (m.hour ?? 7)) continue;
-    if (minute < targetMinute(`${dateStr}:${config.guildId}`)) continue;
+
+    const intervalMs = Math.max(1, m.intervalHours ?? 24) * 3_600_000;
+    const last = m.lastPostedAt ? m.lastPostedAt.getTime() : 0;
+    if (now - last < intervalMs) continue;
 
     const categories = (m.categories ?? ["kehidupan"]).filter(isMotivationCategory);
     const category = (
@@ -98,11 +73,11 @@ export async function runDailyMotivations(client: BotClient): Promise<void> {
     try {
       const sent = await postMotivation(client, config.guildId, category, m.channelId);
       if (sent) {
-        config.motivation!.lastPostedDate = dateStr;
+        config.motivation!.lastPostedAt = new Date();
         await config.save();
       }
     } catch (error) {
-      logger.warn("Gagal mengirim motivasi harian", {
+      logger.warn("Gagal mengirim motivasi terjadwal", {
         guildId: config.guildId,
         error: error instanceof Error ? error.message : error,
       });

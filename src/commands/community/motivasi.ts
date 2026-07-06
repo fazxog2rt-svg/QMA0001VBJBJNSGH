@@ -38,10 +38,10 @@ const command: SlashCommand = {
         )
         .addIntegerOption((o) =>
           o
-            .setName("jam")
-            .setDescription("Jam kirim (0-23 WIB, default 7).")
-            .setMinValue(0)
-            .setMaxValue(23),
+            .setName("interval")
+            .setDescription("Kirim tiap berapa jam (1-24, default 24 = sekali sehari).")
+            .setMinValue(1)
+            .setMaxValue(24),
         ),
     )
     .addSubcommand((s) => s.setName("nonaktif").setDescription("Matikan motivasi harian."))
@@ -71,7 +71,7 @@ const command: SlashCommand = {
     if (sub === "setup") {
       const channel = interaction.options.getChannel("channel", true);
       const kategori = interaction.options.getString("kategori", true);
-      const jam = interaction.options.getInteger("jam") ?? 7;
+      const interval = interaction.options.getInteger("interval") ?? 24;
 
       const categories = kategori === "campur" ? Object.keys(MOTIVATION_CATEGORIES) : [kategori];
 
@@ -82,17 +82,19 @@ const command: SlashCommand = {
             "motivation.enabled": true,
             "motivation.channelId": channel.id,
             "motivation.categories": categories,
-            "motivation.hour": jam,
+            "motivation.intervalHours": interval,
+            "motivation.lastPostedAt": null,
           },
         },
         { upsert: true },
       );
 
+      const jadwal = interval === 24 ? "sekali sehari" : `setiap **${interval} jam**`;
       await interaction.reply({
         embeds: [
           successEmbed(
-            `Motivasi harian aktif di <#${channel.id}> setiap **jam ${jam}:00 WIB** ` +
-              `(kategori: ${categories.join(", ")}).`,
+            `Motivasi aktif di <#${channel.id}> — ${jadwal} (kategori: ${categories.join(", ")}). ` +
+              "Kiriman pertama dalam beberapa menit.",
           ),
         ],
       });

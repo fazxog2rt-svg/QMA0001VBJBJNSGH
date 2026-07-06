@@ -6,7 +6,7 @@ import { GuildConfig } from "../../database/models/GuildConfig";
 import { ModerationCase } from "../../database/models/ModerationCase";
 import { CommunityEvent } from "../../database/models/CommunityEvent";
 import { processDueGiveaways } from "../events/giveawayService";
-import { runDailyMotivations } from "../community/motivationService";
+import { runScheduledMotivations } from "../community/motivationService";
 import { runDueTrials } from "../moderation/trialService";
 import { buildEmbed } from "../../utils/embed";
 import { logger } from "../logger.service";
@@ -160,8 +160,8 @@ export function startScheduler(client: BotClient): void {
         error: error instanceof Error ? error.message : error,
       });
     });
-    runDailyMotivations(client).catch((error) => {
-      logger.error("Gagal memproses motivasi harian", {
+    runScheduledMotivations(client).catch((error) => {
+      logger.error("Gagal memproses motivasi terjadwal", {
         error: error instanceof Error ? error.message : error,
       });
     });

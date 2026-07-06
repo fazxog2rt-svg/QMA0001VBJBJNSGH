@@ -133,13 +133,13 @@ const guildConfigSchema = new Schema(
       categoryChannelId: { type: String },
     },
 
-    // Motivasi harian otomatis (dibuat AI, terasa alami)
+    // Motivasi otomatis (dibuat AI, terasa alami)
     motivation: {
       enabled: { type: Boolean, default: false },
       channelId: { type: String },
       categories: { type: [String], default: ["kehidupan"] },
-      hour: { type: Number, default: 7 }, // jam WIB
-      lastPostedDate: { type: String }, // "YYYY-MM-DD" agar sekali sehari
+      intervalHours: { type: Number, default: 24 }, // jarak antar kiriman (jam)
+      lastPostedAt: { type: Date }, // kapan terakhir dikirim
     },
 
     // Penomoran sidang (jadwal sidang member)
