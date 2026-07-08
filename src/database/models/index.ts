@@ -24,3 +24,4 @@ export * from "./FactionMember";
 export * from "./Season";
 export * from "./SeasonProgress";
 export * from "./MarketListing";
+export * from "./RpgCharacter";
