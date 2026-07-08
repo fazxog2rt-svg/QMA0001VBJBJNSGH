@@ -111,15 +111,14 @@ Moderation → Security → AI → Economy → Events → Testing → Optimasi �
 | Feature | Status | Catatan |
 |---|---|---|
 | `/warn` | implemented | DM notifikasi best-effort + case tercatat |
-| `/mute` / `/unmute` | implemented | Role "Muted" auto-provisioned dengan overwrite di semua channel teks/voice |
-| `/timeout` / `/untimeout` | implemented | Fitur bawaan Discord (maks 28 hari) |
+| `/mute pasang` / `/mute cabut` | implemented | Role "Muted" auto-provisioned dengan overwrite di semua channel teks/voice |
+| `/timeout pasang` / `/timeout cabut` | implemented | Fitur bawaan Discord (maks 28 hari) |
 | `/kick` | implemented | Mengecek `member.kickable` sebelum eksekusi |
-| `/ban` (dengan opsi hapus pesan N hari) | implemented | Mengecek `member.bannable` |
+| `/ban pasang` (dengan opsi hapus pesan N hari) / `/ban cabut` | implemented | Mengecek `member.bannable`; `cabut` = unban dengan validasi target benar-benar dibanned |
 | `/tempban` | implemented | Auto-unban via cron setiap menit (`cronJobs.ts`) saat `expiresAt` terlewati |
 | `/softban` | implemented | Ban + unban langsung untuk membersihkan riwayat pesan |
-| `/unban` | implemented | Validasi target benar-benar sedang dibanned |
 | `/purge` (opsional filter per-user) | implemented | Bulk delete maks 100 pesan |
-| `/lockdown` / `/unlock` | implemented | Toggle permission SendMessages untuk @everyone |
+| `/lockdown pasang` / `/lockdown cabut` | implemented | Toggle permission SendMessages untuk @everyone |
 | `/slowmode` | implemented | 0-21600 detik |
 | Nickname Filter (`/nickname-filter tambah/hapus/list`) | implemented | Auto-reset nickname di `guildMemberUpdate` jika mengandung kata terlarang |
 | `/case lihat/riwayat` | implemented | Lookup per nomor kasus atau riwayat lengkap per member (paginated) |

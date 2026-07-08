@@ -117,7 +117,7 @@ Semua konfigurasi dilakukan lewat command Discord — tidak ada web dashboard.
 | 📈 Leveling | `/rank`, `/leaderboard`, `/level-role`, `/prestige`, `/xp beri` |
 | 🎉 Komunitas | `/daily`, `/reputasi`, `/poll`, `/suggest`, `/starboard`, `/birthday`, `/remind`, `/afk`, `/confess`, `/anon`, `/tempvoice`, `/welcome`, `/autorole`, `/reactionrole`, `/counting`, `/sticky`, `/marriage lamar·cerai·status`, `/pet adopsi·status·kasih-makan·main·rename`, `/autoresponder tambah·hapus·list`, `/motivasi setup·nonaktif·kirim` |
 | 🎫 Tiket | `/ticket-panel`, `/ticket-config` (+ tombol claim/close/reopen/delete & rating) |
-| 🔨 Moderasi | `/warn`, `/mute`·`/unmute`, `/timeout`·`/untimeout`, `/kick`, `/ban`·`/unban`, `/tempban`, `/softban`, `/purge`, `/lockdown`·`/unlock`, `/slowmode`, `/nickname-filter`, `/case`, `/report lapor·channel`, `/sidang buat·list·batal·putusan` |
+| 🔨 Moderasi | `/warn`, `/mute pasang·cabut`, `/timeout pasang·cabut`, `/kick`, `/ban pasang·cabut`, `/tempban`, `/softban`, `/purge`, `/lockdown pasang·cabut`, `/slowmode`, `/nickname-filter`, `/case`, `/report lapor·channel`, `/sidang buat·list·batal·putusan` |
 | 🛡️ Keamanan | `/security-config`, `/auditlog`, `/role-backup`, `/verification` (gerbang tombol) (+ automod, anti-raid, anti-nuke, captcha otomatis) |
 | 🧰 Utilitas | `/qr`, `/password`, `/uuid`, `/timestamp`, `/calc`, `/json-format`, `/color`, `/embed-builder`, `/announce`, `/help`, `/ping` |
 | 🤖 AI (OpenRouter) | `/ai-chat`, `/ai-translate`, `/ai-summarize`, `/ai-code`, `/ai-grammar`, `/ai-prompt`, `/ai-moderate`, `/ai-faq`, `/faq`, `/ai-toggle`, `/ai-channel` (auto-reply per channel: persona + model), context menu "Jelaskan Kode Ini" |

@@ -14,16 +14,29 @@ const MAX_TIMEOUT_MS = 28 * 24 * 60 * 60 * 1000;
 const command: SlashCommand = {
   data: new SlashCommandBuilder()
     .setName("timeout")
-    .setDescription("[Moderasi] Timeout member (fitur bawaan Discord, maks 28 hari).")
+    .setDescription("[Moderasi] Timeout member atau cabut timeout.")
     .setDefaultMemberPermissions(PermissionFlagsBits.ModerateMembers)
-    .addUserOption((option) =>
-      option.setName("user").setDescription("Member yang di-timeout.").setRequired(true),
+    .addSubcommand((s) =>
+      s
+        .setName("pasang")
+        .setDescription("Timeout member (fitur bawaan Discord, maks 28 hari).")
+        .addUserOption((option) =>
+          option.setName("user").setDescription("Member yang di-timeout.").setRequired(true),
+        )
+        .addStringOption((option) =>
+          option.setName("durasi").setDescription("Contoh: 10m, 1h, 1d.").setRequired(true),
+        )
+        .addStringOption((option) =>
+          option.setName("alasan").setDescription("Alasan timeout.").setMaxLength(500),
+        ),
     )
-    .addStringOption((option) =>
-      option.setName("durasi").setDescription("Contoh: 10m, 1h, 1d.").setRequired(true),
-    )
-    .addStringOption((option) =>
-      option.setName("alasan").setDescription("Alasan timeout.").setMaxLength(500),
+    .addSubcommand((s) =>
+      s
+        .setName("cabut")
+        .setDescription("Cabut timeout dari member.")
+        .addUserOption((option) =>
+          option.setName("user").setDescription("Member yang di-untimeout.").setRequired(true),
+        ),
     ),
   category: "moderation",
   requiredPermissions: [PermissionFlagsBits.ModerateMembers],
@@ -37,7 +50,43 @@ const command: SlashCommand = {
       return;
     }
 
+    const sub = interaction.options.getSubcommand();
     const target = interaction.options.getUser("user", true);
+
+    if (sub === "cabut") {
+      const member = await interaction.guild.members.fetch(target.id).catch(() => null);
+      if (!member?.isCommunicationDisabled()) {
+        await interaction.reply({
+          embeds: [errorEmbed("Member ini tidak sedang di-timeout.")],
+          ephemeral: true,
+        });
+        return;
+      }
+
+      await member.timeout(null, "Timeout dicabut manual");
+      const moderationCase = await createModerationCase(
+        interaction.guildId,
+        "timeout",
+        target.id,
+        interaction.user.id,
+        "Timeout dicabut",
+      );
+      await ActivityLog.create({
+        guildId: interaction.guildId,
+        type: "moderation",
+        actorId: interaction.user.id,
+        targetId: target.id,
+        description: `Timeout dicabut #${moderationCase.caseNumber}`,
+      });
+      await interaction.reply({
+        embeds: [
+          successEmbed(`✅ Timeout <@${target.id}> dicabut (Case #${moderationCase.caseNumber}).`),
+        ],
+      });
+      return;
+    }
+
+    // sub === "pasang"
     const durasiInput = interaction.options.getString("durasi", true);
     const alasan = interaction.options.getString("alasan") ?? "Tidak ada alasan diberikan.";
 
@@ -84,10 +133,7 @@ const command: SlashCommand = {
       target.id,
       interaction.user.id,
       alasan,
-      {
-        duration: durationMs,
-        expiresAt,
-      },
+      { duration: durationMs, expiresAt },
     );
 
     await dmModerationNotice(
