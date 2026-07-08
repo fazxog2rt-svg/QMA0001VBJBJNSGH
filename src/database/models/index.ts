@@ -19,3 +19,5 @@ export * from "./VerificationAttempt";
 export * from "./RoleBackup";
 export * from "./AiChatLog";
 export * from "./Faq";
+export * from "./Faction";
+export * from "./FactionMember";

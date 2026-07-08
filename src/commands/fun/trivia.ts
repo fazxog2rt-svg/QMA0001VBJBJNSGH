@@ -12,6 +12,7 @@ import {
 import type { SlashCommand } from "../../types/command";
 import { buildEmbed, errorEmbed } from "../../utils/embed";
 import { logger } from "../../services/logger.service";
+import { addFactionContribution } from "../../services/community/factionService";
 import {
   generateQuizQuestions,
   getQuizLeaderboard,
@@ -261,6 +262,9 @@ async function finishGame(
     bestStreak: board.bestStreak.get(userId) ?? 0,
   }));
   await persistQuizResults(guildId, results).catch(() => undefined);
+
+  // Juara kuis menyumbang poin ke faksinya (jika ada) — Perang Faksi.
+  await addFactionContribution(guildId, ranking[0]![0], 10).catch(() => undefined);
 }
 
 async function stopGame(interaction: ChatInputCommandInteraction): Promise<void> {

@@ -5,6 +5,7 @@ import { handleAiChannelMessage } from "../services/ai/aiChannelService";
 import { handleAutoResponder } from "../services/community/autoResponderService";
 import { handleCountingMessage } from "../services/community/countingService";
 import { handleStickyMessage } from "../services/community/stickyService";
+import { addFactionContribution } from "../services/community/factionService";
 import { runAutoMod } from "../services/security/autoModService";
 import { logger } from "../services/logger.service";
 import type { BotEvent } from "../types/event";
@@ -85,6 +86,17 @@ const event: BotEvent<"messageCreate"> = {
       await handleAfk(message);
 
       const result = await awardMessageXp(message.guildId, message.author.id);
+
+      // Kontribusi Perang Faksi: hanya saat XP benar-benar diberikan (sudah
+      // di-throttle ~60 dtk/user), jadi tidak menambah beban DB tiap pesan.
+      if (result) {
+        await addFactionContribution(message.guildId, message.author.id, 1).catch((error) => {
+          logger.error("Gagal menambah kontribusi faksi", {
+            error: error instanceof Error ? error.message : error,
+          });
+        });
+      }
+
       if (!result?.leveledUp) return;
 
       const discordMember =

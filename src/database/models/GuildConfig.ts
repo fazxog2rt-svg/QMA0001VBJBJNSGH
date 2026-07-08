@@ -147,6 +147,14 @@ const guildConfigSchema = new Schema(
       nextTrialNumber: { type: Number, default: 1 },
     },
 
+    // Faksi & Perang Faksi mingguan
+    faksi: {
+      announceChannelId: { type: String }, // channel pengumuman hasil perang
+      createCost: { type: Number, default: 5000 }, // biaya bikin faksi (coins)
+      weeklyRewardBase: { type: Number, default: 10000 }, // hadiah kas untuk juara
+      lastWarResetAt: { type: Date }, // kapan reset mingguan terakhir
+    },
+
     suggestions: {
       channelId: { type: String },
     },

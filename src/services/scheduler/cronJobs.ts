@@ -7,6 +7,7 @@ import { ModerationCase } from "../../database/models/ModerationCase";
 import { CommunityEvent } from "../../database/models/CommunityEvent";
 import { processDueGiveaways } from "../events/giveawayService";
 import { runScheduledMotivations } from "../community/motivationService";
+import { runWeeklyFactionWar } from "../community/factionService";
 import { runDueTrials } from "../moderation/trialService";
 import { buildEmbed } from "../../utils/embed";
 import { logger } from "../logger.service";
@@ -184,7 +185,20 @@ export function startScheduler(client: BotClient): void {
     { timezone: "Asia/Jakarta" },
   );
 
+  // Perang Faksi: reset & umumkan juara tiap Senin 00:00 WIB.
+  cron.schedule(
+    "0 0 * * 1",
+    () => {
+      runWeeklyFactionWar(client).catch((error) => {
+        logger.error("Gagal memproses perang faksi mingguan", {
+          error: error instanceof Error ? error.message : error,
+        });
+      });
+    },
+    { timezone: "Asia/Jakarta" },
+  );
+
   logger.info(
-    "Cron scheduler dimulai (reminder & tempban setiap menit, ulang tahun setiap jam 08:00 WIB).",
+    "Cron scheduler dimulai (reminder & tempban setiap menit, ulang tahun 08:00 WIB, perang faksi Senin 00:00 WIB).",
   );
 }
