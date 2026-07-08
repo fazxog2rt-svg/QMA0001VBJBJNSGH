@@ -122,7 +122,7 @@ Semua konfigurasi dilakukan lewat command Discord — tidak ada web dashboard.
 | 🧰 Utilitas | `/qr`, `/password`, `/uuid`, `/timestamp`, `/calc`, `/json-format`, `/color`, `/embed-builder`, `/announce`, `/help`, `/ping` |
 | 🤖 AI (OpenRouter) | `/ai-chat`, `/ai-translate`, `/ai-summarize`, `/ai-code`, `/ai-grammar`, `/ai-prompt`, `/ai-moderate`, `/ai-faq`, `/faq`, `/ai-toggle`, `/ai-channel` (auto-reply per channel: persona + model), context menu "Jelaskan Kode Ini" |
 | 🎲 Hiburan | `/coinflip`, `/dice`, `/8ball`, `/tod`, `/meme`, `/trivia mulai·stop·papan` (Cerdas Cermat live, soal AI + papan peringkat), `/daily-quest`, `/tebak-angka`, `/suit` |
-| 💰 Ekonomi | `/balance`, `/bank`, `/transfer`, `/weekly`, `/work`, `/shop`, `/buy`, `/inventory`, `/rich`, `/shop-admin`, `/job`, `/slot`, `/gamble`, `/rob`, `/blackjack` |
+| 💰 Ekonomi | `/balance`, `/bank`, `/transfer`, `/weekly`, `/work`, `/shop`, `/buy`, `/inventory`, `/rich`, `/shop-admin`, `/job`, `/slot`, `/gamble`, `/rob`, `/blackjack`, `/pasar jual·list·beli·batal·punyaku` (marketplace antar-member, escrow) |
 | 📅 Event | `/event buat·selesai·list`, `/giveaway mulai·akhiri` |
 
 ## Performa & Optimasi

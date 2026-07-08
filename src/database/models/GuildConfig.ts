@@ -155,6 +155,12 @@ const guildConfigSchema = new Schema(
       lastWarResetAt: { type: Date }, // kapan reset mingguan terakhir
     },
 
+    // Marketplace antar-member
+    pasar: {
+      nextListingNumber: { type: Number, default: 1 },
+      taxPercent: { type: Number, default: 5 }, // pajak transaksi (dipotong dari penjual)
+    },
+
     suggestions: {
       channelId: { type: String },
     },
