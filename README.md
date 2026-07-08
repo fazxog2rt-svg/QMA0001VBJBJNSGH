@@ -121,7 +121,7 @@ Semua konfigurasi dilakukan lewat command Discord — tidak ada web dashboard.
 | 🛡️ Keamanan | `/security-config`, `/auditlog`, `/role-backup`, `/verification` (gerbang tombol) (+ automod, anti-raid, anti-nuke, captcha otomatis) |
 | 🧰 Utilitas | `/qr`, `/password`, `/uuid`, `/timestamp`, `/calc`, `/json-format`, `/color`, `/embed-builder`, `/announce`, `/help`, `/ping` |
 | 🤖 AI (OpenRouter) | `/ai-chat`, `/ai-translate`, `/ai-summarize`, `/ai-code`, `/ai-grammar`, `/ai-prompt`, `/ai-moderate`, `/ai-faq`, `/faq`, `/ai-toggle`, `/ai-channel` (auto-reply per channel: persona + model), context menu "Jelaskan Kode Ini" |
-| 🎲 Hiburan | `/coinflip`, `/dice`, `/8ball`, `/tod`, `/meme`, `/trivia`, `/daily-quest`, `/tebak-angka`, `/suit` |
+| 🎲 Hiburan | `/coinflip`, `/dice`, `/8ball`, `/tod`, `/meme`, `/trivia mulai·stop·papan` (Cerdas Cermat live, soal AI + papan peringkat), `/daily-quest`, `/tebak-angka`, `/suit` |
 | 💰 Ekonomi | `/balance`, `/bank`, `/transfer`, `/weekly`, `/work`, `/shop`, `/buy`, `/inventory`, `/rich`, `/shop-admin`, `/job`, `/slot`, `/gamble`, `/rob`, `/blackjack` |
 | 📅 Event | `/event buat·selesai·list`, `/giveaway mulai·akhiri` |
 
