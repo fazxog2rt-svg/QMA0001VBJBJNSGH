@@ -14,6 +14,7 @@ import {
   leaveFaction,
   listFactions,
 } from "../../services/community/factionService";
+import { trackSeasonMission } from "../../services/community/seasonService";
 
 const command: SlashCommand = {
   data: new SlashCommandBuilder()
@@ -194,6 +195,8 @@ const command: SlashCommand = {
         await interaction.reply({ embeds: [errorEmbed(result.error!)], ephemeral: true });
         return;
       }
+      // Battle Pass: progres misi "sumbang".
+      await trackSeasonMission(guildId, userId, "sumbang", 1).catch(() => undefined);
       await interaction.reply({
         embeds: [
           successEmbed(

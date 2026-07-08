@@ -1,6 +1,7 @@
 import { SlashCommandBuilder } from "discord.js";
 import type { SlashCommand } from "../../types/command";
 import { claimDaily } from "../../services/community/dailyService";
+import { trackSeasonMission } from "../../services/community/seasonService";
 import { formatDurationMs } from "../../utils/formatDuration";
 import { buildEmbed, errorEmbed } from "../../utils/embed";
 
@@ -33,6 +34,11 @@ const command: SlashCommand = {
       });
       return;
     }
+
+    // Battle Pass: progres misi "harian".
+    await trackSeasonMission(interaction.guildId, interaction.user.id, "harian", 1).catch(
+      () => undefined,
+    );
 
     await interaction.editReply({
       embeds: [

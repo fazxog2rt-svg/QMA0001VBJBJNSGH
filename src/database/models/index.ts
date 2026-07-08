@@ -21,3 +21,5 @@ export * from "./AiChatLog";
 export * from "./Faq";
 export * from "./Faction";
 export * from "./FactionMember";
+export * from "./Season";
+export * from "./SeasonProgress";

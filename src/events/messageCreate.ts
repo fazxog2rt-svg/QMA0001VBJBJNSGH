@@ -6,6 +6,7 @@ import { handleAutoResponder } from "../services/community/autoResponderService"
 import { handleCountingMessage } from "../services/community/countingService";
 import { handleStickyMessage } from "../services/community/stickyService";
 import { addFactionContribution } from "../services/community/factionService";
+import { addSeasonXp, trackSeasonMission } from "../services/community/seasonService";
 import { runAutoMod } from "../services/security/autoModService";
 import { logger } from "../services/logger.service";
 import type { BotEvent } from "../types/event";
@@ -95,6 +96,16 @@ const event: BotEvent<"messageCreate"> = {
             error: error instanceof Error ? error.message : error,
           });
         });
+        // Battle Pass: XP musiman + progres misi "pesan". Sekuensial agar tidak
+        // membuat dokumen progres ganda (race pada pesan pertama musim).
+        try {
+          await addSeasonXp(message.guildId, message.author.id, 10);
+          await trackSeasonMission(message.guildId, message.author.id, "pesan", 1);
+        } catch (error) {
+          logger.error("Gagal memproses Season XP", {
+            error: error instanceof Error ? error.message : error,
+          });
+        }
       }
 
       if (!result?.leveledUp) return;

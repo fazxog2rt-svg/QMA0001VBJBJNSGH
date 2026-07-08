@@ -13,6 +13,7 @@ import type { SlashCommand } from "../../types/command";
 import { buildEmbed, errorEmbed } from "../../utils/embed";
 import { logger } from "../../services/logger.service";
 import { addFactionContribution } from "../../services/community/factionService";
+import { addSeasonXp, trackSeasonMission } from "../../services/community/seasonService";
 import {
   generateQuizQuestions,
   getQuizLeaderboard,
@@ -264,7 +265,11 @@ async function finishGame(
   await persistQuizResults(guildId, results).catch(() => undefined);
 
   // Juara kuis menyumbang poin ke faksinya (jika ada) — Perang Faksi.
-  await addFactionContribution(guildId, ranking[0]![0], 10).catch(() => undefined);
+  const championId = ranking[0]![0];
+  await addFactionContribution(guildId, championId, 10).catch(() => undefined);
+  // Battle Pass: juara dapat Season XP + progres misi "kuis".
+  await addSeasonXp(guildId, championId, 100).catch(() => undefined);
+  await trackSeasonMission(guildId, championId, "kuis", 1).catch(() => undefined);
 }
 
 async function stopGame(interaction: ChatInputCommandInteraction): Promise<void> {

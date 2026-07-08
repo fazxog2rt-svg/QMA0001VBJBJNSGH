@@ -8,6 +8,7 @@ import { CommunityEvent } from "../../database/models/CommunityEvent";
 import { processDueGiveaways } from "../events/giveawayService";
 import { runScheduledMotivations } from "../community/motivationService";
 import { runWeeklyFactionWar } from "../community/factionService";
+import { endExpiredSeasons } from "../community/seasonService";
 import { runDueTrials } from "../moderation/trialService";
 import { buildEmbed } from "../../utils/embed";
 import { logger } from "../logger.service";
@@ -197,6 +198,15 @@ export function startScheduler(client: BotClient): void {
     },
     { timezone: "Asia/Jakarta" },
   );
+
+  // Battle Pass: tutup musim yang berakhir, dicek tiap jam.
+  cron.schedule("0 * * * *", () => {
+    endExpiredSeasons(client).catch((error) => {
+      logger.error("Gagal menutup musim berakhir", {
+        error: error instanceof Error ? error.message : error,
+      });
+    });
+  });
 
   logger.info(
     "Cron scheduler dimulai (reminder & tempban setiap menit, ulang tahun 08:00 WIB, perang faksi Senin 00:00 WIB).",
