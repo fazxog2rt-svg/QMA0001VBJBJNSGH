@@ -237,56 +237,9 @@ export async function buildFactionEmbed(faction: HydratedDocument<FactionDocumen
  */
 export async function runWeeklyFactionWar(client: BotClient): Promise<void> {
   const guildIds = await Faction.distinct("guildId");
-
   for (const guildId of guildIds) {
     try {
-      const factions = await Faction.find({ guildId }).sort({ weeklyPoints: -1 });
-      if (factions.length === 0) continue;
-
-      const winner = factions[0]!;
-      const config = await GuildConfig.findOne({ guildId });
-
-      // Tidak ada pemenang bermakna jika semua 0 poin — tetap reset & catat waktu.
-      if (winner.weeklyPoints > 0) {
-        const reward = config?.faksi?.weeklyRewardBase ?? 10000;
-        winner.treasury += reward;
-        winner.wins += 1;
-        await winner.save();
-
-        const channelId = config?.faksi?.announceChannelId;
-        if (channelId) {
-          const channel = await client.channels.fetch(channelId).catch(() => null);
-          if (channel?.isTextBased() && "send" in channel) {
-            const standings = factions
-              .slice(0, 5)
-              .map(
-                (f, i) =>
-                  `${["🥇", "🥈", "🥉"][i] ?? `**${i + 1}.**`} ${f.emoji} **${f.name}** — ${f.weeklyPoints} poin`,
-              )
-              .join("\n");
-            await channel
-              .send({
-                embeds: [
-                  buildEmbed("premium")
-                    .setTitle("⚔️ Hasil Perang Faksi Pekan Ini")
-                    .setDescription(
-                      `Juara pekan ini: ${winner.emoji} **${winner.name}**! ` +
-                        `Kas faksi bertambah **${reward}** coins. 🎉\n\n**Klasemen:**\n${standings}`,
-                    )
-                    .setFooter({ text: "Poin mingguan direset. Perang baru dimulai!" }),
-                ],
-              })
-              .catch(() => undefined);
-          }
-        }
-      }
-
-      await Faction.updateMany({ guildId }, { $set: { weeklyPoints: 0 } });
-      await GuildConfig.updateOne(
-        { guildId },
-        { $set: { "faksi.lastWarResetAt": new Date() } },
-        { upsert: true },
-      );
+      await resetFactionWarForGuild(client, guildId);
     } catch (error) {
       logger.warn("Gagal memproses perang faksi", {
         guildId,
@@ -294,4 +247,55 @@ export async function runWeeklyFactionWar(client: BotClient): Promise<void> {
       });
     }
   }
+}
+
+/** Tentukan juara, beri hadiah, umumkan, lalu reset poin mingguan — satu guild. */
+export async function resetFactionWarForGuild(client: BotClient, guildId: string): Promise<void> {
+  const factions = await Faction.find({ guildId }).sort({ weeklyPoints: -1 });
+  if (factions.length === 0) return;
+
+  const winner = factions[0]!;
+  const config = await GuildConfig.findOne({ guildId });
+
+  // Tidak ada pemenang bermakna jika semua 0 poin — tetap reset & catat waktu.
+  if (winner.weeklyPoints > 0) {
+    const reward = config?.faksi?.weeklyRewardBase ?? 10000;
+    winner.treasury += reward;
+    winner.wins += 1;
+    await winner.save();
+
+    const channelId = config?.faksi?.announceChannelId;
+    if (channelId) {
+      const channel = await client.channels.fetch(channelId).catch(() => null);
+      if (channel?.isTextBased() && "send" in channel) {
+        const standings = factions
+          .slice(0, 5)
+          .map(
+            (f, i) =>
+              `${["🥇", "🥈", "🥉"][i] ?? `**${i + 1}.**`} ${f.emoji} **${f.name}** — ${f.weeklyPoints} poin`,
+          )
+          .join("\n");
+        await channel
+          .send({
+            embeds: [
+              buildEmbed("premium")
+                .setTitle("⚔️ Hasil Perang Faksi Pekan Ini")
+                .setDescription(
+                  `Juara pekan ini: ${winner.emoji} **${winner.name}**! ` +
+                    `Kas faksi bertambah **${reward}** coins. 🎉\n\n**Klasemen:**\n${standings}`,
+                )
+                .setFooter({ text: "Poin mingguan direset. Perang baru dimulai!" }),
+            ],
+          })
+          .catch(() => undefined);
+      }
+    }
+  }
+
+  await Faction.updateMany({ guildId }, { $set: { weeklyPoints: 0 } });
+  await GuildConfig.updateOne(
+    { guildId },
+    { $set: { "faksi.lastWarResetAt": new Date() } },
+    { upsert: true },
+  );
 }

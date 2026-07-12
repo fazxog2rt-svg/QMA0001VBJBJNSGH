@@ -87,6 +87,12 @@ export async function startSeason(
   return { ok: true, data: season };
 }
 
+/** Tutup musim aktif guild (tanpa memulai yang baru). */
+export async function endSeason(guildId: string): Promise<boolean> {
+  const res = await Season.updateMany({ guildId, active: true }, { $set: { active: false } });
+  return res.modifiedCount > 0;
+}
+
 /** Ambil / buat progres member untuk musim aktif, sekaligus refresh misi. */
 export async function getOrCreateProgress(
   guildId: string,
