@@ -2,6 +2,7 @@ import { Collection, type Interaction } from "discord.js";
 import type { BotClient } from "../client";
 import { checkCooldown } from "../middlewares/cooldown.middleware";
 import { hasRequiredPermissions } from "../middlewares/permission.middleware";
+import { isCategoryEnabled } from "../services/config/featureFlags";
 import type { BotEvent } from "../types/event";
 import { errorEmbed } from "../utils/embed";
 import { logger } from "../services/logger.service";
@@ -27,6 +28,18 @@ const event: BotEvent<"interactionCreate"> = {
         if (!hasRequiredPermissions(interaction, command)) {
           await interaction.reply({
             embeds: [errorEmbed("Kamu tidak punya izin untuk menjalankan command ini.")],
+            ephemeral: true,
+          });
+          return;
+        }
+
+        // Sakelar fitur dari dashboard: blokir command bila kategorinya dimatikan admin.
+        if (
+          interaction.inGuild() &&
+          !(await isCategoryEnabled(interaction.guildId, command.category))
+        ) {
+          await interaction.reply({
+            embeds: [errorEmbed("Fitur ini sedang dinonaktifkan oleh admin server.")],
             ephemeral: true,
           });
           return;

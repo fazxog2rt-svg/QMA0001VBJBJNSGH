@@ -125,6 +125,24 @@ Semua konfigurasi dilakukan lewat command Discord — tidak ada web dashboard.
 | 💰 Ekonomi | `/balance`, `/bank`, `/transfer`, `/weekly`, `/work`, `/shop`, `/buy`, `/inventory`, `/rich`, `/shop-admin`, `/job`, `/slot`, `/gamble`, `/rob`, `/blackjack`, `/pasar jual·list·beli·batal·punyaku` (marketplace antar-member, escrow) |
 | 📅 Event | `/event buat·selesai·list`, `/giveaway mulai·akhiri` |
 
+## Dashboard Web (opsional)
+
+Panel kontrol berbasis web untuk menyalakan/mematikan fitur per server tanpa command.
+Nonaktif secara default; aktifkan dengan env berikut:
+
+- `DASHBOARD_ENABLED=true`
+- `DISCORD_CLIENT_SECRET` — dari Developer Portal → OAuth2 → Client Secret
+- `DASHBOARD_BASE_URL` — URL publik dashboard (mis. `https://contoh.web.id`); tambahkan
+  `<base>/callback` ke **Redirects** OAuth2 di Developer Portal
+- `SESSION_SECRET` — string acak rahasia (mis. `openssl rand -hex 32`)
+- `DASHBOARD_PORT` — opsional; default mengikuti `SERVER_PORT` panel atau `3000`
+
+Login pakai **Discord OAuth2**; hanya server tempat kamu punya izin **Manage Server**
+yang bisa diatur. Toggle menulis langsung ke `GuildConfig` di MongoDB yang dibaca bot,
+jadi perubahan berlaku live. Kategori command (`economy`, `fun`, `leveling`, `community`,
+`ai`, `events`) bisa dimatikan; command yang kategorinya nonaktif otomatis diblokir di
+`interactionCreate`. Moderasi, keamanan, & utilitas sengaja selalu aktif.
+
 ## Performa & Optimasi
 
 - **Redis cache** (`src/services/cache.service.ts`): leaderboard XP & ekonomi di-cache 60 detik

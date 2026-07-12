@@ -147,6 +147,17 @@ const guildConfigSchema = new Schema(
       nextTrialNumber: { type: Number, default: 1 },
     },
 
+    // Sakelar fitur per-kategori (dikontrol dari dashboard web). Default aktif.
+    // Kategori moderasi/keamanan/utility sengaja tidak bisa dimatikan.
+    features: {
+      economy: { type: Boolean, default: true },
+      fun: { type: Boolean, default: true },
+      leveling: { type: Boolean, default: true },
+      community: { type: Boolean, default: true },
+      ai: { type: Boolean, default: true },
+      events: { type: Boolean, default: true },
+    },
+
     // Faksi & Perang Faksi mingguan
     faksi: {
       announceChannelId: { type: String }, // channel pengumuman hasil perang

@@ -43,6 +43,20 @@ const envSchema = z.object({
 
   KTP_ISSUER_NAME: z.string().default("Dukcapil Komunitas"),
   KTP_CARD_STORAGE_PATH: z.string().default("./storage/identity-cards"),
+
+  // Dashboard web (opsional). Aktifkan dengan DASHBOARD_ENABLED=true.
+  DASHBOARD_ENABLED: z
+    .string()
+    .optional()
+    .transform((value) => value === "true" || value === "1"),
+  // Secret OAuth2 aplikasi Discord (Developer Portal → OAuth2). Wajib jika dashboard aktif.
+  DISCORD_CLIENT_SECRET: z.string().optional(),
+  // URL publik dashboard, mis. https://nexterastore.web.id (untuk redirect OAuth).
+  DASHBOARD_BASE_URL: z.string().optional(),
+  // Port dashboard. Default: SERVER_PORT (dari panel) atau 3000.
+  DASHBOARD_PORT: z.string().optional(),
+  // Kunci penandatangan sesi login. Set nilai acak & rahasia bila dashboard aktif.
+  SESSION_SECRET: z.string().optional(),
 });
 
 const parsed = envSchema.safeParse(process.env);

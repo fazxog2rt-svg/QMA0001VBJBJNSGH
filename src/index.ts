@@ -9,6 +9,7 @@ import { registerCommands } from "./handlers/registerCommands";
 import { connectRedis, disconnectRedis } from "./services/redis.service";
 import { logger } from "./services/logger.service";
 import { startScheduler } from "./services/scheduler/cronJobs";
+import { startDashboard } from "./dashboard/server";
 import { initLocales } from "./utils/locale";
 
 async function bootstrap(): Promise<void> {
@@ -49,6 +50,16 @@ async function bootstrap(): Promise<void> {
   }
 
   startScheduler(client);
+
+  // Dashboard web opsional (kontrol fitur via browser). Hanya aktif bila
+  // DASHBOARD_ENABLED=true; gagal start tidak mematikan bot.
+  try {
+    startDashboard(client);
+  } catch (error) {
+    logger.error("Gagal memulai dashboard web", {
+      error: error instanceof Error ? error.message : error,
+    });
+  }
 
   const shutdown = async (signal: string): Promise<void> => {
     logger.info(`Menerima ${signal}, mematikan bot dengan aman...`);
